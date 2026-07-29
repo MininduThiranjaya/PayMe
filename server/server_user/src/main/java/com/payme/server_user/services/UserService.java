@@ -22,7 +22,7 @@ public class UserService {
     
     public UserReg_res_dto registerUserService(UserReg_req_dto data) {
 
-        if(userRepo.userExistByNIC(data.getNic())) {
+        if(userRepo.existsByNic(data.getNic())) {
             throw new UserAlreadyExistsExc(data.getNic());
         }
 
