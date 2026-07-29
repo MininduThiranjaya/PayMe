@@ -2,12 +2,7 @@ package com.payme.server_user.DTO.req_dto;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
-import lombok.Getter;
-import lombok.Setter;
-
-@Getter
-@Setter
-public class userReg_req_dto {
+public class UserReg_req_dto {
     
     @NotBlank(message = "NIC is required")
     private String nic;
@@ -18,4 +13,36 @@ public class userReg_req_dto {
     private String userName;
     @NotBlank(message = "Role is required")
     private String role;
+
+    public String getNic() {
+        return nic;
+    }
+
+    public void setNic(String nic) {
+        this.nic = nic;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+    public String getRole() {
+        return role;
+    }
+
+    public void setRole(String role) {
+        this.role = role;
+    }
 }
