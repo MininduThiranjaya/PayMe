@@ -47,7 +47,7 @@ public class UserModel {
     @Column(name = "nic", nullable = false, unique = true)
     private String nic;
     @CreationTimestamp
-    @Column(name = "created_at", nullable = false, unique = false)
+    @Column(name = "created_at", nullable = false, unique = true, updatable = false)
     private LocalDateTime createdAt;
     @UpdateTimestamp
     @Column(name = "updated_at", nullable = false, unique = false)
