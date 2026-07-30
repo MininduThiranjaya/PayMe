@@ -5,6 +5,7 @@ import java.util.Map;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
@@ -36,6 +37,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundExc.class)
     public ResponseEntity<Map<String, Object>> handleUserNotFoundException(UserNotFoundExc exception) {
+
         Map<String, Object> response = new HashMap<>();
         response.put("status", 404);
         response.put("code", "USER_NOT_FOUND");
@@ -48,6 +50,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserAlreadyExistsExc.class)
     public ResponseEntity<Map<String, Object>> handleUserAlreadyExistsException(UserAlreadyExistsExc exception) {
+
         Map<String, Object> response = new HashMap<>();
         response.put("status", 409);
         response.put("code", "USER_ALREADY_EXISTS");
@@ -60,6 +63,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotUpdatedExc.class)
     public ResponseEntity<Map<String, Object>> handleUserNotUpdatedException(UserNotUpdatedExc exception) {
+
         Map<String, Object> response = new HashMap<>();
         response.put("status", 409);
         response.put("code", "USER_NOT_UPDATED");
@@ -70,12 +74,26 @@ public class GlobalExceptionHandler {
             .body(response);
     }
 
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<Map<String, Object>> handleBadCredentialsException(BadCredentialsException exception) {
+
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", 401);
+        response.put("code", "INVALID_CREDENTIALS");
+        response.put("message", "Invalid NIC or password");
+
+        return ResponseEntity
+                .status(HttpStatus.UNAUTHORIZED)
+                .body(response);
+    }
+
     @ExceptionHandler(Exception.class)
     public ResponseEntity<Map<String, Object>> handleGenericException(Exception exception) {
+
         Map<String, Object> response = new HashMap<>();
         response.put("status", 500);
         response.put("code", "INTERNAL_SERVER_ERROR");
-        response.put("message", "An unexpected error occurred");
+        response.put("message", "An unexpected error occurred" + exception.getMessage());
 
         return ResponseEntity
             .status(HttpStatus.INTERNAL_SERVER_ERROR)
