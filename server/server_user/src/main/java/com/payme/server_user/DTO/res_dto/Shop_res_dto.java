@@ -1,6 +1,5 @@
 package com.payme.server_user.DTO.res_dto;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.Setter;
 
