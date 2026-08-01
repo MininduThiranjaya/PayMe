@@ -6,9 +6,20 @@ import lombok.Setter;
 
 @Getter
 @Setter
-@AllArgsConstructor
 public class Shop_res_dto {
 
+    private Long id;
     private String shopName;
     private String address;
+
+    public Shop_res_dto(Long id, String shopName, String address) {
+        this.id = id;
+        this.shopName = shopName;
+        this.address = address;
+    }
+
+    public Shop_res_dto(String shopName, String address) {
+        this.shopName = shopName;
+        this.address = address;
+    }
 }
