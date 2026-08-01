@@ -1,15 +1,18 @@
 package com.payme.server_user.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.payme.security.AppUserDetails;
 import com.payme.server_user.DTO.req_dto.MerchantReg_req_dto;
 import com.payme.server_user.DTO.req_dto.UserLogin_req_dto;
 import com.payme.server_user.DTO.req_dto.UserReg_req_dto;
+import com.payme.server_user.DTO.res_dto.CurrentUserProfile_res_dto;
 import com.payme.server_user.DTO.res_dto.MerchantReg_res_dto;
 import com.payme.server_user.DTO.res_dto.UserLogin_res_dto;
 import com.payme.server_user.DTO.res_dto.UserReg_res_dto;
@@ -46,6 +49,13 @@ public class UserController {
         
         UserLogin_res_dto loggedUser = userService.userLoginService(data.getNic(), data.getPassword());
         return ResponseEntity.ok(loggedUser); 
+    }
+
+    @GetMapping("/me")
+    public ResponseEntity<CurrentUserProfile_res_dto> getCurrentUserDetailsController(@AuthenticationPrincipal AppUserDetails currentUser) {
+        
+        CurrentUserProfile_res_dto currentUserDetails = userService.getCurrentUserDetailsService(currentUser.getUsername());
+        return ResponseEntity.ok(currentUserDetails);
     }
 
     @GetMapping("/test")
