@@ -12,7 +12,4 @@ import lombok.Setter;
 public class UserLogin_res_dto {
     
     String token;
-    private long expiresIn;
-    private Object user;
-    private String roles;
 }
