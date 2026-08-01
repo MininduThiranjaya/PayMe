@@ -9,11 +9,13 @@ import org.springframework.stereotype.Service;
 
 import com.payme.server_user.DTO.req_dto.MerchantReg_req_dto;
 import com.payme.server_user.DTO.req_dto.UserReg_req_dto;
+import com.payme.server_user.DTO.res_dto.CurrentUserProfile_res_dto;
 import com.payme.server_user.DTO.res_dto.MerchantReg_res_dto;
 import com.payme.server_user.DTO.res_dto.Shop_res_dto;
 import com.payme.server_user.DTO.res_dto.UserLogin_res_dto;
 import com.payme.server_user.DTO.res_dto.UserReg_res_dto;
 import com.payme.server_user.error.exceptions.UserAlreadyExistsExc;
+import com.payme.server_user.error.exceptions.UserNotFoundExc;
 import com.payme.server_user.model.MerchantModel;
 import com.payme.server_user.model.ShopModel;
 import com.payme.server_user.model.UserModel;
@@ -115,12 +117,39 @@ public class UserService {
         
         UserDetails userDetails = jWTService.authenticate(nic, password);
         String token = jWTService.generateToken(userDetails);
-        // AppUserDetails appUserDetails = (AppUserDetails) userDetails;
-        // String roles = userDetails.getAuthorities()
-        //     .stream()
-        //     .findFirst()
-        //     .get()
-        //     .getAuthority();
         return new UserLogin_res_dto(token);
+    }
+
+    public CurrentUserProfile_res_dto getCurrentUserDetailsService(String nic) throws UserNotFoundExc{
+        
+        UserModel user = userRepo.findByNic(nic)
+            .orElseThrow(() -> new UserNotFoundExc(nic));
+
+        if(user.getRoles().contains(UserModel.Role.MERCHANT)) {
+            List<Shop_res_dto> shops = ((MerchantModel) user).getShopDetails()
+                .stream()
+                .map(shop -> new Shop_res_dto(
+                    shop.getId(),
+                    shop.getShopName(),
+                    shop.getAddress()
+                ))
+                .toList();
+            return new CurrentUserProfile_res_dto(
+                user.getNic(),
+                user.getUserName(),
+                user.getRoles(),
+                user.getCreatedAt(),
+                user.getUpdatedAt(),
+                shops
+            );
+        }
+            
+        return new CurrentUserProfile_res_dto(
+            user.getNic(),
+            user.getUserName(),
+            user.getRoles(),
+            user.getCreatedAt(), 
+            user.getUpdatedAt()
+        );
     }
 }
