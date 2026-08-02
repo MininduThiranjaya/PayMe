@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:client/services/Onboard_Storage_Service.dart';
+import 'package:client/storage/Onboard_Storage.dart';
+import 'package:client/providers/AuthProvider.dart';
+import 'package:provider/provider.dart';
 
 class Login_Screen extends StatefulWidget {
   const Login_Screen({super.key});
@@ -9,22 +11,69 @@ class Login_Screen extends StatefulWidget {
 }
 
 class _Login_Screen_State extends State<Login_Screen> {
+  final TextEditingController nicController = TextEditingController();
+
+  final TextEditingController passwordController = TextEditingController();
+
+  Future<void> login() async {
+    FocusScope.of(context).unfocus();
+
+    final String nic = nicController.text.trim();
+
+    final String password = passwordController.text;
+
+    if (nic.isEmpty || password.isEmpty) {
+      ScaffoldMessenger.of(
+        context,
+      ).showSnackBar(const SnackBar(content: Text('All fields are required')));
+
+      return;
+    }
+
+    final authProvider = context.read<AuthProvider>();
+
+    final success = await authProvider.login(nic: nic, password: password);
+
+    if (!mounted) return;
+
+    if (!success) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(authProvider.errorMessage ?? 'Login failed')),
+      );
+    } else {
+      Navigator.pushNamedAndRemoveUntil(
+        context,
+        '/dashboard',
+        (route) => false,
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    nicController.dispose();
+    passwordController.dispose();
+
+    super.dispose();
+  }
+
   Future<void> resetOnboardingStatus() async {
-    await OnboardStorageService().resetOnboarding();
+    await Onboard_Storage().resetOnboarding();
   }
 
   @override
   Widget build(BuildContext context) {
+    final isLoading = context.watch<AuthProvider>().isLoading;
+
     return Scaffold(
       resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: LayoutBuilder(
           builder: (context, constraints) {
-
             const pagePadding = EdgeInsets.all(20);
-            final availableHeight = constraints.maxHeight - pagePadding.vertical;
-
+            final availableHeight =constraints.maxHeight - pagePadding.vertical;
             return SingleChildScrollView(
+
               keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
               child: Padding(
                 padding: pagePadding,
@@ -53,6 +102,8 @@ class _Login_Screen_State extends State<Login_Screen> {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             children: [
                               TextField(
+                                controller: nicController,
+                                textInputAction: TextInputAction.next,
                                 decoration: InputDecoration(
                                   labelText: 'NIC Number',
                                   hintText: 'Enter your NIC number',
@@ -65,6 +116,13 @@ class _Login_Screen_State extends State<Login_Screen> {
                               const SizedBox(height: 20),
 
                               TextField(
+                                controller: passwordController,
+                                textInputAction: TextInputAction.done,
+                                onSubmitted: (_) {
+                                  if (!isLoading) {
+                                    login();
+                                  }
+                                },
                                 obscureText: true,
                                 decoration: InputDecoration(
                                   labelText: 'Password',
@@ -96,9 +154,17 @@ class _Login_Screen_State extends State<Login_Screen> {
                                 width: double.infinity,
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    // Login
+                                    isLoading ? null : login();
                                   },
-                                  child: const Text('Login'),
+                                  child: isLoading
+                                      ? const SizedBox(
+                                          width: 20,
+                                          height: 20,
+                                          child: CircularProgressIndicator(
+                                            strokeWidth: 2,
+                                          ),
+                                        )
+                                      : const Text('Login'),
                                 ),
                               ),
 
