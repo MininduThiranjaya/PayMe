@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:client/services/Onboard_Storage_Service.dart';
+import 'package:client/storage/Onboard_Storage.dart';
 
 class Intro_Screen_3 extends StatelessWidget {
 
   const Intro_Screen_3({super.key});
 
   Future<void> completeOnboardingStatus() async {
-    await OnboardStorageService().completeOnboarding();
+    await Onboard_Storage().completeOnboarding();
   }
 
   @override
@@ -23,7 +23,7 @@ class Intro_Screen_3 extends StatelessWidget {
             FloatingActionButton(
               onPressed: () {
                 completeOnboardingStatus();
-                Navigator.pushReplacementNamed(context, '/loginScreen');
+                Navigator.pushNamedAndRemoveUntil(context, '/loginScreen', (route) => false);
               },
               child: Text("complete"),
             )
