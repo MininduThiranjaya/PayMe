@@ -1,9 +1,23 @@
+import 'package:client/config/DioClient.dart';
+import 'package:client/providers/AuthProvider.dart';
+import 'package:client/services/Login_Service.dart';
+import 'package:client/storage/Token_Storage.dart';
 import 'package:flutter/material.dart';
-import 'package:client/screens/splash_screen/Splash_Screen.dart';
 import 'package:client/routes/AppRoutes.dart';
+import 'package:provider/provider.dart';
 
 void main() {
-  runApp(const MyApp());
+
+  final dio = DioClient();
+  runApp(
+    ChangeNotifierProvider(
+      create: (_) => AuthProvider(
+        loginService: Login_Service(dioClient: dio),
+        tokenStorage: Token_Storage(),
+      )..getMe(),
+      child: const MyApp()
+    )  
+  );
 }
 
 class MyApp extends StatelessWidget {
