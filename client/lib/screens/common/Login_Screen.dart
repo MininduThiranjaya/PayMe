@@ -1,112 +1,146 @@
 import 'package:flutter/material.dart';
 import 'package:client/services/Onboard_Storage_Service.dart';
 
-class Login_Screen extends StatefulWidget{
-
+class Login_Screen extends StatefulWidget {
   const Login_Screen({super.key});
 
   @override
   State<Login_Screen> createState() => _Login_Screen_State();
 }
 
-class _Login_Screen_State extends State<Login_Screen>{
-
+class _Login_Screen_State extends State<Login_Screen> {
   Future<void> resetOnboardingStatus() async {
     await OnboardStorageService().resetOnboarding();
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold (
+    return Scaffold(
+      resizeToAvoidBottomInset: true,
       body: SafeArea(
-        child: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(16),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Expanded(
-                  flex: 1,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: const [
-                      Text('Welcome to the app!'),
-                      SizedBox(height: 20),
-                      Text('Login Screen'),
-                    ],
+        child: LayoutBuilder(
+          builder: (context, constraints) {
+
+            const pagePadding = EdgeInsets.all(20);
+            final availableHeight = constraints.maxHeight - pagePadding.vertical;
+
+            return SingleChildScrollView(
+              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
+              child: Padding(
+                padding: pagePadding,
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(minHeight: availableHeight),
+                  child: IntrinsicHeight(
+                    child: Column(
+                      children: [
+                        // Title section: 1/3
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Text('Welcome to the app!'),
+                              SizedBox(height: 20),
+                              Text('Login Screen'),
+                            ],
+                          ),
+                        ),
+
+                        // Form section: 2/3
+                        Expanded(
+                          flex: 2,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.stretch,
+                            children: [
+                              TextField(
+                                decoration: InputDecoration(
+                                  labelText: 'NIC Number',
+                                  hintText: 'Enter your NIC number',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                              ),
+
+                              const SizedBox(height: 20),
+
+                              TextField(
+                                obscureText: true,
+                                decoration: InputDecoration(
+                                  labelText: 'Password',
+                                  hintText: 'Enter your password',
+                                  border: OutlineInputBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                  ),
+                                ),
+                              ),
+
+                              const SizedBox(height: 10),
+
+                              Align(
+                                alignment: Alignment.centerLeft,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    // Go to forgot-password page
+                                  },
+                                  child: const Text(
+                                    'Forgot password?',
+                                    style: TextStyle(color: Colors.blue),
+                                  ),
+                                ),
+                              ),
+
+                              const SizedBox(height: 20),
+
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    // Login
+                                  },
+                                  child: const Text('Login'),
+                                ),
+                              ),
+
+                              const SizedBox(height: 20),
+
+                              SizedBox(
+                                width: double.infinity,
+                                child: ElevatedButton(
+                                  onPressed: () {
+                                    resetOnboardingStatus();
+                                  },
+                                  child: const Text('Reset onboarding'),
+                                ),
+                              ),
+
+                              const Spacer(),
+
+                              Align(
+                                alignment: Alignment.center,
+                                child: GestureDetector(
+                                  onTap: () {
+                                    // Go to registration page
+                                  },
+                                  child: const Text(
+                                    'Do not have an account? Sign up',
+                                    textAlign: TextAlign.center,
+                                    style: TextStyle(color: Colors.blue),
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ],
+                    ),
                   ),
                 ),
-                Expanded(
-                  flex:2,
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      TextField(
-                        decoration: 
-                          InputDecoration(
-                            labelText: 'Nic Number',
-                            hintText: 'Enter your nic number',
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8))
-                          ),
-                      ),
-                      SizedBox(height: 20),
-                      TextField(
-                        decoration: 
-                          InputDecoration(
-                            labelText: 'Password',
-                            hintText: 'Enter your password',
-                            border: OutlineInputBorder(borderRadius: BorderRadius.circular(8))
-                          ),
-                          obscureText: true,
-                      ),
-                      SizedBox(height: 10),
-                      Align(
-                        alignment: Alignment.centerLeft,
-                        child: InkWell(
-                          onTap: () {
-                            // 
-                          },
-                          overlayColor: WidgetStateProperty.resolveWith<Color?>(
-                            (states) => Colors.transparent,
-                          ),
-                          child: Text('Forget password ?', style: TextStyle(color: Colors.blue)),
-                        ),
-                      ),
-                      SizedBox(height: 20),
-                      FloatingActionButton(
-                        onPressed: () {
-                          // 
-                        },
-                        child: Text('Login')
-                      ),
-                      SizedBox(height: 20),
-                      FloatingActionButton(
-                        onPressed: () {
-                          resetOnboardingStatus();
-                        },
-                        child: Text('reset onboarding')
-                      ),
-                      Spacer(),
-                      Align(
-                        alignment: Alignment.center,
-                        child: InkWell(
-                          onTap: () {
-                            // 
-                          },
-                          overlayColor: WidgetStateProperty.resolveWith<Color?>(
-                            (state) => Colors.transparent
-                          ),
-                          child: Text('Do not have an account ? Sign up', style: TextStyle(color: Colors.blue))
-                        )
-                      )
-                    ]
-                  )
-                )
-              ],
-            ),
-          )
-        )
-      )
+              ),
+            );
+          },
+        ),
+      ),
     );
   }
 }
