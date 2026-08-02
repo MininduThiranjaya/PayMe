@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:client/services/Onboard_Storage_Service.dart';
+import 'package:client/storage/Onboard_Storage.dart';
 
 class Splash_Screen extends StatefulWidget {
 
@@ -18,12 +18,12 @@ class _Splash_Screen_State extends State<Splash_Screen> {
   }
 
   Future<void> checkOnboardingStatus() async {
-    final bool hasSeenOnboarding = await OnboardStorageService().hasSeenOnboarding();
+    final bool hasSeenOnboarding = await Onboard_Storage().hasSeenOnboarding();
     if (!mounted) return;
     if (hasSeenOnboarding) {
-      Navigator.pushReplacementNamed(context, '/loginScreen');
+      Navigator.pushNamedAndRemoveUntil(context, '/auth', (route) => false);
     } else {
-      Navigator.pushReplacementNamed(context, '/introScreen');
+      Navigator.pushNamedAndRemoveUntil(context, '/introScreen', (route) => false);
     }
   }
 
