@@ -3,6 +3,7 @@ package com.payme.server_user.services;
 import java.util.List;
 import java.util.Set;
 
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -14,8 +15,8 @@ import com.payme.server_user.DTO.res_dto.MerchantReg_res_dto;
 import com.payme.server_user.DTO.res_dto.Shop_res_dto;
 import com.payme.server_user.DTO.res_dto.UserLogin_res_dto;
 import com.payme.server_user.DTO.res_dto.UserReg_res_dto;
+import com.payme.server_user.error.exceptions.BadCredentialsExc;
 import com.payme.server_user.error.exceptions.UserAlreadyExistsExc;
-import com.payme.server_user.error.exceptions.UserNotFoundExc;
 import com.payme.server_user.model.MerchantModel;
 import com.payme.server_user.model.ShopModel;
 import com.payme.server_user.model.UserModel;
@@ -115,15 +116,19 @@ public class UserService {
 
     public UserLogin_res_dto userLoginService(String nic, String password) {
         
-        UserDetails userDetails = jWTService.authenticate(nic, password);
-        String token = jWTService.generateToken(userDetails);
-        return new UserLogin_res_dto(token);
+        try {
+            UserDetails userDetails = jWTService.authenticate(nic, password);
+            String token = jWTService.generateToken(userDetails);
+            return new UserLogin_res_dto(token);
+        } catch (BadCredentialsException exception) {
+            throw new BadCredentialsExc("INVALID_CREDENTIALS", "Invalid NIC or password");
+        }
     }
 
-    public CurrentUserProfile_res_dto getCurrentUserDetailsService(String nic) throws UserNotFoundExc{
+    public CurrentUserProfile_res_dto getCurrentUserDetailsService(String nic) throws BadCredentialsExc {
         
         UserModel user = userRepo.findByNic(nic)
-            .orElseThrow(() -> new UserNotFoundExc(nic));
+            .orElseThrow(() -> new BadCredentialsExc("USER_NOT_FOUND", "User not found: " + nic));
 
         if(user.getRoles().contains(UserModel.Role.MERCHANT)) {
             List<Shop_res_dto> shops = ((MerchantModel) user).getShopDetails()
