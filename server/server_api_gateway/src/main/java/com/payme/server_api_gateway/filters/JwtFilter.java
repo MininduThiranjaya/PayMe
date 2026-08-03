@@ -1,19 +1,18 @@
 package com.payme.server_api_gateway.filters;
 
-import org.springframework.stereotype.Component;
-import org.springframework.web.server.ServerWebExchange;
-
 import java.nio.charset.StandardCharsets;
 
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
-import org.springframework.core.io.buffer.DataBuffer;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
+import org.springframework.core.io.buffer.DataBuffer;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
+import org.springframework.stereotype.Component;
+import org.springframework.web.server.ServerWebExchange;
 
 import com.payme.server_api_gateway.security.JwtService;
-import org.springframework.http.HttpHeaders;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.JwtException;
@@ -31,8 +30,8 @@ public class JwtFilter implements GlobalFilter, Ordered {
         String json = """
             {
                 "status":%d,
-                "code":%s,
-                "message":%s
+                "code":"%s",
+                "message":"%s"
             }
         """.formatted(status.value(), code, message);
         byte[] bytes = json.getBytes(StandardCharsets.UTF_8);
