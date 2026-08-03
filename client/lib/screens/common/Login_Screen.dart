@@ -43,7 +43,7 @@ class _Login_Screen_State extends State<Login_Screen> {
     } else {
       Navigator.pushNamedAndRemoveUntil(
         context,
-        '/dashboard',
+        '/auth',
         (route) => false,
       );
     }
@@ -63,7 +63,7 @@ class _Login_Screen_State extends State<Login_Screen> {
 
   @override
   Widget build(BuildContext context) {
-    final isLoading = context.watch<AuthProvider>().isLoading;
+    final isLoging = context.watch<AuthProvider>().isLoging;
 
     return Scaffold(
       resizeToAvoidBottomInset: true,
@@ -119,7 +119,7 @@ class _Login_Screen_State extends State<Login_Screen> {
                                 controller: passwordController,
                                 textInputAction: TextInputAction.done,
                                 onSubmitted: (_) {
-                                  if (!isLoading) {
+                                  if (!isLoging) {
                                     login();
                                   }
                                 },
@@ -154,9 +154,9 @@ class _Login_Screen_State extends State<Login_Screen> {
                                 width: double.infinity,
                                 child: ElevatedButton(
                                   onPressed: () {
-                                    isLoading ? null : login();
+                                    isLoging ? null : login();
                                   },
-                                  child: isLoading
+                                  child: isLoging
                                       ? const SizedBox(
                                           width: 20,
                                           height: 20,
