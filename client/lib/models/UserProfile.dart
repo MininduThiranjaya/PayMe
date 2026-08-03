@@ -73,7 +73,7 @@ class UserProfile {
     );
   }
 
-   Map<String, dynamic> toJson() {
+  Map<String, dynamic> toJson() {
 
     return {
       'nic': nic,
