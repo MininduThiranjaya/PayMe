@@ -1,13 +1,16 @@
+import 'package:client/providers/AuthProvider.dart';
+import 'package:client/widget/common/SwitchRoleButton_Widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class MerchantDashboard_Screen extends StatefulWidget {
   const MerchantDashboard_Screen({super.key});
   @override
-  State<MerchantDashboard_Screen> createState() => _MerchantDashboard_Screen_State();
+  State<MerchantDashboard_Screen> createState() =>
+      _MerchantDashboard_Screen_State();
 }
 
 class _MerchantDashboard_Screen_State extends State<MerchantDashboard_Screen> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,9 +31,10 @@ class _MerchantDashboard_Screen_State extends State<MerchantDashboard_Screen> {
                   child: IntrinsicHeight(
                     child: Column(
                       children: [
-                        Text('Merchant dashboard')
-                      ]
-                    )
+                        Text('Merchant dashboard'),
+                        SwitchRoleButton_Widget()
+                      ],
+                    ),
                   ),
                 ),
               ),

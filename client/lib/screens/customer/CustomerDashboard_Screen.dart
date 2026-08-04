@@ -1,4 +1,7 @@
+import 'package:client/providers/AuthProvider.dart';
+import 'package:client/widget/common/SwitchRoleButton_Widget.dart';
 import 'package:flutter/material.dart';
+import 'package:provider/provider.dart';
 
 class CustomerDashboard_Screen extends StatefulWidget {
   const CustomerDashboard_Screen({super.key});
@@ -7,7 +10,6 @@ class CustomerDashboard_Screen extends StatefulWidget {
 }
 
 class _CustomerDashboard_Screen extends State<CustomerDashboard_Screen> {
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -28,9 +30,10 @@ class _CustomerDashboard_Screen extends State<CustomerDashboard_Screen> {
                   child: IntrinsicHeight(
                     child: Column(
                       children: [
-                        Text('customer dashboard')
-                      ]
-                    )
+                        Text('customer dashboard'),
+                        SwitchRoleButton_Widget()
+                      ],
+                    ),
                   ),
                 ),
               ),
