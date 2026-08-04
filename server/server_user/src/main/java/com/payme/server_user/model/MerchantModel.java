@@ -12,17 +12,13 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="merchant_details")
+@Table(name = "merchant_details")
 @Getter
 @Setter
 @NoArgsConstructor
-public class MerchantModel extends UserModel{
-    
-    @OneToMany(
-        mappedBy = "merchant",
-        cascade = CascadeType.ALL,
-        orphanRemoval = true
-    )
+public class MerchantModel extends UserModel {
+
+    @OneToMany(mappedBy = "merchant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ShopModel> shopNames = new ArrayList<>();
 
     public void addShopDetails(ShopModel shop) {
