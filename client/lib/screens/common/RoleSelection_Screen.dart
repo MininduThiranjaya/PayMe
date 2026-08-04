@@ -11,7 +11,7 @@ class RoleSelection_Screen extends StatelessWidget {
       await authProvider.selectRole(role);
       Navigator.pushNamedAndRemoveUntil(
         context,
-        '/dashboard',
+        '/auth',
         (route) => false,
       );
     } catch (error) {
