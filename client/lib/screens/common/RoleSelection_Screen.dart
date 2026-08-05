@@ -99,7 +99,7 @@ class RoleSelection_Screen extends StatelessWidget {
                           SizedBox(
                             width: double.infinity,
                             height: 52,
-                            child: OutlinedButton.icon(
+                            child: ElevatedButton.icon(
                               onPressed: hasCustomerRole
                                   ? () => selectRole(context, 'CUSTOMER')
                                   : null,
