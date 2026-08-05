@@ -1,47 +1,43 @@
-import 'package:client/providers/AuthProvider.dart';
-import 'package:client/widget/common/SwitchRoleButton_Widget.dart';
+import 'package:client/screens/customer/navbar/Home_Screen.dart';
+import 'package:client/screens/customer/navbar/Notification_Screen.dart';
+import 'package:client/screens/customer/navbar/Profile_Screen.dart';
+import 'package:client/screens/customer/navbar/TransactionHistory_Screen.dart';
+import 'package:client/widget/common/BottomTabNavBar_Widget.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
-class MerchantDashboard_Screen extends StatefulWidget {
+class MerchantDashboard_Screen extends StatelessWidget {
   const MerchantDashboard_Screen({super.key});
-  @override
-  State<MerchantDashboard_Screen> createState() =>
-      _MerchantDashboard_Screen_State();
-}
 
-class _MerchantDashboard_Screen_State extends State<MerchantDashboard_Screen> {
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      resizeToAvoidBottomInset: true,
-      body: SafeArea(
-        child: LayoutBuilder(
-          builder: (context, constraints) {
-            const pagePadding = EdgeInsets.all(20);
-            final availableHeight =
-                constraints.maxHeight - pagePadding.vertical;
-
-            return SingleChildScrollView(
-              keyboardDismissBehavior: ScrollViewKeyboardDismissBehavior.onDrag,
-              child: Padding(
-                padding: pagePadding,
-                child: ConstrainedBox(
-                  constraints: BoxConstraints(minHeight: availableHeight),
-                  child: IntrinsicHeight(
-                    child: Column(
-                      children: [
-                        Text('Merchant dashboard'),
-                        SwitchRoleButton_Widget()
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            );
-          },
+    return const BottomTabNavBar_Widget(
+      initialIndex: 0,
+      tabs: [
+        BottomTabItem(
+          title: 'Home',
+          icon: Icons.home_outlined,
+          activeIcon: Icons.home,
+          page: Home_Screen(),
         ),
-      ),
+        BottomTabItem(
+          title: 'Transactions',
+          icon: Icons.payments_outlined,
+          activeIcon: Icons.payments,
+          page: TransactionHistory_Screen(),
+        ),
+        BottomTabItem(
+          title: 'Notification',
+          icon: Icons.notifications_active_outlined,
+          activeIcon: Icons.notifications_active,
+          page: Notification_Screen(),
+        ),
+        BottomTabItem(
+          title: 'Profile',
+          icon: Icons.person_outline,
+          activeIcon: Icons.person,
+          page: Profile_Screen(),
+        ),
+      ],
     );
   }
 }
