@@ -3,7 +3,6 @@ import 'dart:ui';
 import 'package:client/providers/AuthProvider.dart';
 import 'package:client/widget/common/SwitchRoleButton_Widget.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 import 'package:client/widget/common/DashboardCard_Widget.dart';
 
 class Home_Screen extends StatefulWidget {
@@ -29,35 +28,8 @@ class _Home_Screen_State extends State<Home_Screen> {
     'ref': 'TXN-88213',
   };
 
-  // Mock notifications
-  final List<Map<String, String>> notifications = [
-    {
-      'title': 'Ticket Confirmed',
-      'message': 'Your bus ticket to Vavuniya has been booked.',
-      'time': '2h ago',
-    },
-    {
-      'title': 'Payment Successful',
-      'message': 'Rs. 850.00 was charged for your recent trip.',
-      'time': '2h ago',
-    },
-    {
-      'title': 'New Promo',
-      'message': 'Get 10% off on your next booking this weekend.',
-      'time': '1d ago',
-    },
-  ];
-
-  bool _showNotifications = false;
-
   // Draggable QR button position (null until first layout sets a default).
   Offset? _qrButtonPosition;
-
-  void toggleNotifications() {
-    setState(() {
-      _showNotifications = !_showNotifications;
-    });
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -423,13 +395,6 @@ class _Home_Screen_State extends State<Home_Screen> {
                   },
                 ),
 
-                // ---- Blurred overlay showing notifications ----
-                if (_showNotifications)
-                  _NotificationOverlay(
-                    notifications: notifications,
-                    onClose: toggleNotifications,
-                  ),
-
                 // ---- Draggable QR scan button ----
                 Positioned(
                   left: _qrButtonPosition!.dx,
@@ -459,136 +424,6 @@ class _Home_Screen_State extends State<Home_Screen> {
             );
           },
         ),
-      ),
-    );
-  }
-}
-
-/// Full-screen overlay that blurs the home page content behind it and
-/// shows the notification list in a floating panel, anchored top-right
-/// near the bell icon.
-class _NotificationOverlay extends StatelessWidget {
-  final List<Map<String, String>> notifications;
-  final VoidCallback onClose;
-
-  const _NotificationOverlay({
-    required this.notifications,
-    required this.onClose,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Positioned.fill(
-      child: Stack(
-        children: [
-          // Tap outside the panel to dismiss, blurring everything behind.
-          GestureDetector(
-            onTap: onClose,
-            child: BackdropFilter(
-              filter: ImageFilter.blur(sigmaX: 6, sigmaY: 6),
-              child: Container(color: Colors.black.withValues(alpha: 0.15)),
-            ),
-          ),
-
-          // Notification panel — centered on screen
-          Center(
-            child: Material(
-              color: Colors.transparent,
-              child: Container(
-                width: 320,
-                constraints: const BoxConstraints(maxHeight: 400),
-                decoration: BoxDecoration(
-                  color: Theme.of(context).colorScheme.surface,
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.18),
-                      blurRadius: 24,
-                      offset: const Offset(0, 10),
-                    ),
-                  ],
-                ),
-                child: Column(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.fromLTRB(16, 14, 8, 8),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            'Notifications',
-                            style: TextStyle(
-                              fontSize: 15,
-                              fontWeight: FontWeight.w700,
-                            ),
-                          ),
-                          IconButton(
-                            onPressed: onClose,
-                            icon: const Icon(Icons.close, size: 20),
-                            visualDensity: VisualDensity.compact,
-                          ),
-                        ],
-                      ),
-                    ),
-                    const Divider(height: 1),
-                    Flexible(
-                      child: notifications.isEmpty
-                          ? const Padding(
-                              padding: EdgeInsets.all(24),
-                              child: Text('No notifications yet'),
-                            )
-                          : ListView.separated(
-                              shrinkWrap: true,
-                              padding: const EdgeInsets.symmetric(vertical: 4),
-                              itemCount: notifications.length,
-                              separatorBuilder: (_, __) =>
-                                  const Divider(height: 1),
-                              itemBuilder: (context, index) {
-                                final n = notifications[index];
-                                return ListTile(
-                                  dense: true,
-                                  leading: Container(
-                                    padding: const EdgeInsets.all(8),
-                                    decoration: BoxDecoration(
-                                      color: Theme.of(
-                                        context,
-                                      ).colorScheme.primaryContainer,
-                                      shape: BoxShape.circle,
-                                    ),
-                                    child: const Icon(
-                                      Icons.notifications_none_rounded,
-                                      size: 16,
-                                    ),
-                                  ),
-                                  title: Text(
-                                    n['title']!,
-                                    style: const TextStyle(
-                                      fontSize: 13.5,
-                                      fontWeight: FontWeight.w600,
-                                    ),
-                                  ),
-                                  subtitle: Text(
-                                    n['message']!,
-                                    style: const TextStyle(fontSize: 12.5),
-                                  ),
-                                  trailing: Text(
-                                    n['time']!,
-                                    style: TextStyle(
-                                      fontSize: 11,
-                                      color: Colors.grey[500],
-                                    ),
-                                  ),
-                                );
-                              },
-                            ),
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-        ],
       ),
     );
   }
