@@ -9,9 +9,9 @@
 		<relativePath/> <!-- lookup parent from repository -->
 	</parent>
 	<groupId>com.payme</groupId>
-	<artifactId>server_user</artifactId>
+	<artifactId>server_order</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>server_user</name>
+	<name>server_order</name>
 	<description/>
 	<url/>
 	<licenses>
@@ -94,14 +94,6 @@
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
-				<configuration>
-					<excludes>
-						<exclude>
-							<groupId>org.projectlombok</groupId>
-							<artifactId>lombok</artifactId>
-						</exclude>
-					</excludes>
-				</configuration>
 			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
