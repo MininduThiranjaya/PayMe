@@ -260,7 +260,6 @@ class _Home_Screen_State extends State<Home_Screen> {
                                         ],
                                       ),
                                       const SizedBox(height: 14),
-                                      const SizedBox(height: 14),
                                       Column(
                                         crossAxisAlignment:
                                             CrossAxisAlignment.start,
