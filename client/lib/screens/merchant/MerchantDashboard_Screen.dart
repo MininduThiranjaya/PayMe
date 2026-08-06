@@ -1,7 +1,8 @@
-import 'package:client/screens/customer/navbar/Home_Screen.dart';
-import 'package:client/screens/customer/navbar/Notification_Screen.dart';
-import 'package:client/screens/customer/navbar/Profile_Screen.dart';
-import 'package:client/screens/customer/navbar/TransactionHistory_Screen.dart';
+import 'package:client/screens/merchant/navbar/Home_Screen.dart';
+import 'package:client/screens/merchant/navbar/Notification_Screen.dart';
+import 'package:client/screens/merchant/navbar/Profile_Screen.dart';
+import 'package:client/screens/merchant/navbar/SellProduct_Screen.dart';
+import 'package:client/screens/merchant/navbar/TransactionHistory_Screen.dart';
 import 'package:client/widget/common/BottomTabNavBar_Widget.dart';
 import 'package:flutter/material.dart';
 
@@ -18,6 +19,12 @@ class MerchantDashboard_Screen extends StatelessWidget {
           icon: Icons.home_outlined,
           activeIcon: Icons.home,
           page: Home_Screen(),
+        ),
+        BottomTabItem(
+          title: 'Sales',
+          icon: Icons.point_of_sale_outlined,
+          activeIcon: Icons.point_of_sale,
+          page: SellProduct_Screen(),
         ),
         BottomTabItem(
           title: 'Transactions',
