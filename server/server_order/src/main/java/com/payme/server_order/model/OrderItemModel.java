@@ -1,7 +1,5 @@
 package com.payme.server_order.model;
 
-import org.hibernate.annotations.ManyToAny;
-
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -25,11 +23,11 @@ public class OrderItemModel {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
     @ManyToOne
-    @JoinColumn(name = "id", nullable = false)
+    @JoinColumn(name = "order_id", nullable = false)
     private OrderModel order;
-    @Column(name = "itemname", nullable = true)
+    @Column(name = "itemname", nullable = false)
     private String itemName;
-    @Column(name = "quantity", nullable = true)
+    @Column(name = "quantity", nullable = false)
     private int quantity;
     @Column(name = "metric", nullable = false)
     private String metric;
