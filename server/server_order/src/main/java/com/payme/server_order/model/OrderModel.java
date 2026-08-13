@@ -4,6 +4,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.CascadeType;
@@ -33,14 +34,15 @@ class OrderModel {
     @Column(name = "customerid", nullable = false)
     private long customerId;
     @OneToMany(
-        mappedBy = "order_item",
+        mappedBy = "order",
         cascade = CascadeType.ALL,
         orphanRemoval = true
     )
     private List<OrderItemModel> orderItem = new ArrayList<>();
-    @Column(name = "created_at", nullable = false, unique = false, updatable = false)
+    @CreationTimestamp
+    @Column(name = "created_at", nullable = false, updatable = false)
     private LocalDateTime createdAt;
     @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false, unique = false)
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
 }
