@@ -24,7 +24,7 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-class OrderModel {
+public class OrderModel {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
