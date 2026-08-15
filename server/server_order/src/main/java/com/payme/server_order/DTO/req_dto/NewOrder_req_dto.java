@@ -6,7 +6,8 @@ import java.util.List;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 
 
 @Getter
@@ -14,9 +15,11 @@ import jakarta.validation.constraints.NotEmpty;
 @NoArgsConstructor
 public class NewOrder_req_dto {
     
-    @NotEmpty(message = "Merchant id is required")
+    @NotNull(message = "Merchant id is required")
+    @Positive(message = "Merchant id must be greater than 0")
     private long merchantId;
-    @NotEmpty(message = "Customer id is required")
+    @NotNull(message = "Customer id is required")
+    @Positive(message = "Customer id must be greater than 0")
     private long customerId;
     private List<NewOrderItem_req_dto> orderItem = new ArrayList<>();
 }
