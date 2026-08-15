@@ -34,7 +34,7 @@ public class OrderModel {
     @Column(name = "customerid", nullable = false)
     private long customerId;
     @OneToMany(
-        mappedBy = "orders",
+        mappedBy = "order",
         cascade = CascadeType.ALL,
         orphanRemoval = true
     )
