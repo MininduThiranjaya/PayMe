@@ -1,5 +1,6 @@
 package com.payme.server_order.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,9 +21,9 @@ public class OrderControler {
     private final OrderService orderService;
 
     @PostMapping("/set-new-order")
-    public String setNewOrderController(@Valid @RequestBody NewOrder_req_dto data) {        
-        String response = orderService.setNewOrderService(data);
-        return response;
+    public ResponseEntity<Long> setNewOrderController(@Valid @RequestBody NewOrder_req_dto data) {        
+        long orderId = orderService.setNewOrderService(data);
+        return ResponseEntity.ok(orderId);
     }
     
 }
