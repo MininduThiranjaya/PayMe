@@ -20,7 +20,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name = "order")
+@Table(name = "orders")
 @Getter
 @Setter
 @NoArgsConstructor
@@ -34,7 +34,7 @@ public class OrderModel {
     @Column(name = "customerid", nullable = false)
     private long customerId;
     @OneToMany(
-        mappedBy = "order",
+        mappedBy = "orders",
         cascade = CascadeType.ALL,
         orphanRemoval = true
     )
