@@ -25,7 +25,7 @@ public class OrderService {
             OrderItemModel orderItemModel = new OrderItemModel();
             orderItemModel.setItemName(orderItem.getItemName());
             orderItemModel.setQuantity(orderItem.getQuantity());
-            orderItemModel.setMetric(orderItem.getItemMetric());
+            orderItemModel.setMetric(orderItem.getItemMetric().name());
             orderItemModel.setUnitPrice(orderItem.getUnitPrice());
             orderItemModel.setOrder(orderModel);
             orderModel.getOrderItem().add(orderItemModel);
