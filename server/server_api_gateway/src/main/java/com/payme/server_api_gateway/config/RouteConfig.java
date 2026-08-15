@@ -17,6 +17,10 @@ public class RouteConfig {
                 .path("/payme/api/user/**")
                 .uri("http://localhost:5051")
             )
+            .route("order-service", route -> route
+                .path("/payme/api/order/**")
+                .uri("http://localhost:5052")
+            )
             .build();
     }
 }
