@@ -24,7 +24,7 @@ public class NewOrderItem_req_dto {
     @Positive(message = "Quantity must be greater than 0")
     private int quantity;
     @NotEmpty(message = "Item metric type is required")
-    private String ItemMetric;
+    private ItemMetric itemMetric;
     @NotNull(message = "Unit price is required")
     @Positive(message = "Unit price must be greater than 0")
     private int unitPrice;
