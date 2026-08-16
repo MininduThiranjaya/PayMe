@@ -4,6 +4,7 @@ import org.springframework.stereotype.Service;
 
 import com.payme.server_order.DTO.req_dto.NewOrderItem_req_dto;
 import com.payme.server_order.DTO.req_dto.NewOrder_req_dto;
+import com.payme.server_order.error.exceptions.OrderNotSavedExc;
 import com.payme.server_order.model.OrderItemModel;
 import com.payme.server_order.model.OrderModel;
 import com.payme.server_order.repository.OrderRepo;
@@ -30,7 +31,15 @@ public class OrderService {
             orderItemModel.setOrder(orderModel);
             orderModel.getOrderItem().add(orderItemModel);
         }
-        OrderModel savedOrder = orderRepo.save(orderModel);
-        return  savedOrder.getId();
+        try {
+            OrderModel savedOrder = orderRepo.save(orderModel);
+            return savedOrder.getId();
+        } catch (Exception e) {
+            throw new OrderNotSavedExc("ORDER_NOT_SAVED", "Order could not be saved");
+        }
+    }
+
+    public String getOrderByIdService(long id) {
+        return "done";
     }
 }
