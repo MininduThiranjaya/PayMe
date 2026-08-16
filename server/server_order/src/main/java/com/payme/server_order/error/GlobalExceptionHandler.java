@@ -9,6 +9,7 @@ import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
+import com.payme.server_order.error.exceptions.OrderNotFoundExc;
 import com.payme.server_order.error.exceptions.OrderNotSavedExc;
 
 @RestControllerAdvice
@@ -32,10 +33,22 @@ public class GlobalExceptionHandler {
             .body(response);
     }
 
-    @ExceptionHandler(OrderNotSavedExc.class)
+    @ExceptionHandler(OrderNotFoundExc.class)
     public ResponseEntity<Map<String, Object>> handleOrderNotSavedException(
-            OrderNotSavedExc exception) {
+            OrderNotFoundExc exception) {
 
+        Map<String, Object> response = new HashMap<>();
+        response.put("status", 404);
+        response.put("code", exception.getCode());
+        response.put("message", exception.getMessage());
+
+        return ResponseEntity
+                .status(HttpStatus.NOT_FOUND)
+                .body(response);
+    }
+
+    @ExceptionHandler(OrderNotSavedExc.class)
+    public ResponseEntity<Map<String, Object>> handleOrderNotFoundException(OrderNotFoundExc exception) {
         Map<String, Object> response = new HashMap<>();
         response.put("status", 500);
         response.put("code", exception.getCode());
