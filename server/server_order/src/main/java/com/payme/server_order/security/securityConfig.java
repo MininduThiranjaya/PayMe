@@ -17,6 +17,7 @@ public class securityConfig {
             .authorizeHttpRequests(auth ->
                 auth
                     .requestMatchers(HttpMethod.POST, "/payme/api/order/set-new-order").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/payme/api/order/get-order-by-id/{id}").permitAll()
                     .anyRequest().authenticated()
             );
         return http.build();
