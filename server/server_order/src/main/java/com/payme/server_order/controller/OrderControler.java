@@ -1,6 +1,7 @@
 package com.payme.server_order.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -24,6 +25,7 @@ public class OrderControler {
 
     private final OrderService orderService;
 
+    @PreAuthorize("hasRole('MERCHANT')")
     @PostMapping("/set-new-order")
     public ResponseEntity<Long> setNewOrderController(@Valid @RequestBody NewOrder_req_dto data) {  
 
@@ -31,6 +33,7 @@ public class OrderControler {
         return ResponseEntity.ok(orderId);
     }
 
+    @PreAuthorize("hasAnyRole('CUSTOMER', 'MERCHANT')")
     @GetMapping("/get-order-by-id/{id}")
     public ResponseEntity<NewOrder_res_dto> getOrderByIdController(@PathVariable long id) {
 
