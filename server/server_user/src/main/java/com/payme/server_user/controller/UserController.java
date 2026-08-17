@@ -1,6 +1,7 @@
 package com.payme.server_user.controller;
 
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -60,6 +61,7 @@ public class UserController {
         return ResponseEntity.ok(currentUserDetails);
     }
 
+    @PreAuthorize("hasRole('CUSTOMER')")
     @PutMapping("/update/role-merchant")
     public ResponseEntity<CurrentUserProfile_res_dto> updateUserRoleToMerchantController(@AuthenticationPrincipal AppUserDetails currentUser, @Valid @RequestBody MerchantShop_req_dto data) {
 
@@ -67,6 +69,7 @@ public class UserController {
         return ResponseEntity.ok(updatedUserCustomer);
     }
 
+    @PreAuthorize("hasRole('MERCHANT')")
     @PutMapping("/update/role-customer")
     public ResponseEntity<CurrentUserProfile_res_dto> updateUserRoleToCustomerController(@AuthenticationPrincipal AppUserDetails currentUser) {
 
@@ -74,6 +77,7 @@ public class UserController {
         return ResponseEntity.ok(updatedUserMerchant);
     }
 
+    @PreAuthorize("hasRole('MERCHANT')")
     @GetMapping("/test")
     public String testApi() {
         return "only for testing purpose";
