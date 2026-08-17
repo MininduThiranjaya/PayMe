@@ -1,5 +1,6 @@
 package com.payme.server_user.services.authServices;
 
+import java.nio.charset.StandardCharsets;
 import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
@@ -51,6 +52,9 @@ public class JWTService implements AuthenticationService {
             .claims()
             .add(claims)
             .subject(userDetails.getUsername())
+            .issuer("payme-auth")
+            .audience().add("payme-api")
+            .and()
             .issuedAt(new Date(System.currentTimeMillis()))
             .expiration(new Date(System.currentTimeMillis() + jwtExpiry))
             .and()
@@ -60,7 +64,7 @@ public class JWTService implements AuthenticationService {
 
     public Key getSignKey() {
 
-        byte[] keyBites = secretKey.getBytes();
+        byte[] keyBites = secretKey.getBytes(StandardCharsets.UTF_8);
         return Keys.hmacShaKeyFor(keyBites);
     }
 
@@ -84,6 +88,8 @@ public class JWTService implements AuthenticationService {
         
         Claims claims = Jwts.parser()
             .setSigningKey(getSignKey())
+            .requireIssuer("payme-auth")
+            .requireAudience("payme-api")
             .build()
             .parseClaimsJws(token)
             .getBody();
