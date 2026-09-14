@@ -16,9 +16,12 @@ import com.payme.server_user.DTO.req_dto.MerchantShop_req_dto;
 import com.payme.server_user.DTO.req_dto.UserReg_req_dto;
 import com.payme.server_user.DTO.res_dto.CurrentUserProfile_res_dto;
 import com.payme.server_user.DTO.res_dto.MerchantReg_res_dto;
+import com.payme.server_user.DTO.res_dto.RegStripeConnectAcc_res_dto;
 import com.payme.server_user.DTO.res_dto.Shop_res_dto;
 import com.payme.server_user.DTO.res_dto.UserLogin_res_dto;
 import com.payme.server_user.DTO.res_dto.UserReg_res_dto;
+import com.payme.server_user.client.PaymentServiceClient;
+import com.payme.server_user.enums.MerchantStatus;
 import com.payme.server_user.error.exceptions.BadCredentialsExc;
 import com.payme.server_user.error.exceptions.UserAlreadyExistsExc;
 import com.payme.server_user.error.exceptions.UserNotUpdatedExc;
@@ -28,6 +31,7 @@ import com.payme.server_user.model.UserModel;
 import com.payme.server_user.repository.MerchantRepo;
 import com.payme.server_user.repository.UserRepo;
 import com.payme.server_user.services.authServices.JWTService;
+
 import jakarta.persistence.EntityManager;
 
 import lombok.RequiredArgsConstructor;
@@ -41,6 +45,7 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final JWTService jWTService;
     private final EntityManager entityManager;
+    private final PaymentServiceClient paymentServiceClient; 
     
     public UserReg_res_dto registerCustomerService(UserReg_req_dto data) {
 
@@ -71,6 +76,7 @@ public class UserService {
         );
     }
 
+    @Transactional
     public MerchantReg_res_dto registerMerchantService(MerchantReg_req_dto data) {
 
         if(userRepo.existsByNic(data.getNic())) {
@@ -110,6 +116,11 @@ public class UserService {
         }
 
         MerchantModel savedUser = merchantRepo.save(user);
+        // Call Payment Service
+        // If this fails, PaymentServiceClient throws exception
+        RegStripeConnectAcc_res_dto stripeResponse =
+            paymentServiceClient.registerStripeConnectAccount();
+        savedUser.setStripeAccountId(stripeResponse.getStripId());
 
         List<Shop_res_dto> shops = savedUser.getShopDetails()
             .stream()
@@ -121,8 +132,11 @@ public class UserService {
 
         return new MerchantReg_res_dto(
             savedUser.getNic(),
+            savedUser.getStripeAccountId(),
             savedUser.getUserName(),
             savedUser.getRoles(),
+            stripeResponse.getStripeOnboardingURL(),
+            savedUser.getMerchantStatus(),
             shops
         );
     }
@@ -168,6 +182,9 @@ public class UserService {
             Set<UserModel.Role> updatedRoles =new HashSet<>(merchant.getRoles());
             updatedRoles.add(UserModel.Role.MERCHANT);
             merchant.setRoles(updatedRoles);
+            RegStripeConnectAcc_res_dto stripeResponse =
+                paymentServiceClient.registerStripeConnectAccount();
+            merchant.setStripeAccountId(stripeResponse.getStripId());
             for (int i = 0; i < data.getShopNames().size(); i++) {
                 ShopModel shop = new ShopModel();
                 shop.setShopName(data.getShopNames().get(i).trim());
@@ -211,8 +228,10 @@ public class UserService {
                 .toList();
             return new CurrentUserProfile_res_dto(
                 merchant.getNic(),
+                merchant.getStripeAccountId(),
                 merchant.getUserName(),
                 merchant.getRoles(),
+                merchant.getMerchantStatus(),
                 merchant.getCreatedAt(),
                 merchant.getUpdatedAt(),
                 shops
