@@ -17,6 +17,7 @@ class _Notification_Screen_State extends State<Notification_Screen> {
     final isLoging = context.watch<AuthProvider>().isLoging;
 
     return Scaffold(
+      backgroundColor: const Color(0xFFF3F4F6),
       resizeToAvoidBottomInset: true,
       body: SafeArea(
         child: LayoutBuilder(
