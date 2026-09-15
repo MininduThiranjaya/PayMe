@@ -45,8 +45,8 @@ public class SecurityConfig {
                 auth
                 .pathMatchers(HttpMethod.OPTIONS, "/**").permitAll()
                 .pathMatchers(HttpMethod.POST, "/payme/api/user/login").permitAll()
-                .pathMatchers(HttpMethod.POST, "/payme/api/user/reg").permitAll()
-                .pathMatchers(HttpMethod.POST, "/payme/api/user/merchant-reg").permitAll()
+                .pathMatchers(HttpMethod.POST, "/payme/api/user/reg/customer").permitAll()
+                .pathMatchers(HttpMethod.POST, "/payme/api/user/reg/merchant").permitAll()
                 .anyExchange().authenticated()
             ).oauth2ResourceServer(oauth2 -> 
                 oauth2.jwt(jwt -> 
