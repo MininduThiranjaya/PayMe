@@ -2,9 +2,9 @@ package com.payme.server_user.client;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.ParameterizedTypeReference;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientRequestException;
 import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 import com.payme.server_user.DTO.ApiResponse;
@@ -15,9 +15,10 @@ public class PaymentServiceClient {
 
     private final WebClient webClient;
 
-    public PaymentServiceClient(
-            WebClient.Builder webClientBuilder,
-            @Value("${services.payment.url}") String paymentServiceUrl) {
+    public PaymentServiceClient(WebClient.Builder webClientBuilder,
+            @Value("${services.payment.url}") String paymentServiceUrl
+    ) {
+
         this.webClient = webClientBuilder
                 .baseUrl(paymentServiceUrl)
                 .build();
@@ -29,33 +30,23 @@ public class PaymentServiceClient {
             ApiResponse<RegStripeConnectAcc_res_dto> response =
                 webClient
                     .get()
-                    .uri("/auth/reg/stripe-connect-acc")
+                    .uri("reg/stripe-connect-acc")
                     .retrieve()
-                    .onStatus(
-                        HttpStatusCode::isError,
-                        clientResponse ->
-                            clientResponse
-                                .bodyToMono(String.class)
-                                .map(body ->
-                                    new RuntimeException(
-                                            "Payment service error: " + body
-                                    )
-                                )
-                    )
                     .bodyToMono(
-                        new ParameterizedTypeReference<
-                            ApiResponse<RegStripeConnectAcc_res_dto>
-                        >() {}
+                            new ParameterizedTypeReference<
+                                    ApiResponse<RegStripeConnectAcc_res_dto>
+                            >() {}
                     )
                     .block();
             if (response == null) {
                 throw new RuntimeException(
-                    "Payment service returned an empty response"
+                    "Payment Service returned an empty response"
                 );
             }
             if (!response.isStatus()) {
                 throw new RuntimeException(
-                    "Payment service request failed: " + response.getMessage()
+                    "Payment Service request failed: "
+                        + response.getMessage()
                 );
             }
             if (response.getResData() == null) {
@@ -66,19 +57,30 @@ public class PaymentServiceClient {
             return response.getResData();
 
         } catch (WebClientResponseException e) {
-            
+
             throw new RuntimeException(
-                "Payment service returned HTTP "
+                "Payment Service HTTP error "
                     + e.getStatusCode()
                     + ": "
                     + e.getResponseBodyAsString(),
                 e
             );
 
+        } catch (WebClientRequestException e) {
+
+            throw new RuntimeException(
+                "Could not connect to Payment Service: "
+                    + e.getMessage(),
+                e
+            );
+
         } catch (Exception e) {
 
             throw new RuntimeException(
-                "Failed to communicate with Payment Service",
+                "Payment Service communication failed: "
+                    + e.getClass().getSimpleName()
+                    + " - "
+                    + e.getMessage(),
                 e
             );
         }
