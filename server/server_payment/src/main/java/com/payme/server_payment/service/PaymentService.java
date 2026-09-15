@@ -17,43 +17,46 @@ import lombok.AllArgsConstructor;
 public class PaymentService {
 
     private final StripeClient stripeClient;
-    
+
     public RegStripeConnectAcc_res_dto regStripeConnectAccountService() {
 
         try {
+            // 1. Create Stripe Express connected account
             AccountCreateParams accountParams = AccountCreateParams.builder()
-                .setType(AccountCreateParams.Type.EXPRESS)
-                .build();
+                    .setType(AccountCreateParams.Type.EXPRESS)
+                    .build();
             Account account = stripeClient
-                .v1()
-                .accounts()
-                .create(accountParams);
+                    .v1()
+                    .accounts()
+                    .create(accountParams);
             String stripeAccountId = account.getId();
+            // 2. Create onboarding link
             AccountLinkCreateParams accountLinkParams = AccountLinkCreateParams.builder()
-                .setAccount(stripeAccountId)
-                .setRefreshUrl(
-                        "http://localhost:5173/stripe/refresh"
-                )
-                .setReturnUrl(
-                        "http://localhost:5173/stripe/success"
-                )
-                .setType(
-                        AccountLinkCreateParams.Type.ACCOUNT_ONBOARDING
-                )
-                .build();
+                    .setAccount(stripeAccountId)
+                    .setRefreshUrl("http://localhost:50438/merchant/stripe/reg/refresh")
+                    .setReturnUrl("http://localhost:50438/merchant/stripe/reg/success")
+                    .setType(AccountLinkCreateParams.Type.ACCOUNT_ONBOARDING)
+                    .build();
             AccountLink accountLink = stripeClient
-                .v1()
-                .accountLinks()
-                .create(accountLinkParams);
-            // 3. Return both values
-            return RegStripeConnectAcc_res_dto.builder()
-                .stripId(stripeAccountId)
-                .stripeOnboardingURL(accountLink.getUrl())
-                .build();
-        }
-        catch(StripeException e) {
+                    .v1()
+                    .accountLinks()
+                    .create(accountLinkParams);
+            // 3. Return useful information
+            RegStripeConnectAcc_res_dto response =  RegStripeConnectAcc_res_dto.builder()
+                    .stripeId(stripeAccountId)
+                    .stripeOnboardingURL(accountLink.getUrl())
+                    .chargesEnabled(account.getChargesEnabled())
+                    .payoutsEnabled(account.getPayoutsEnabled())
+                    .detailsSubmitted(account.getDetailsSubmitted())
+                    .build();
+            System.out.println(
+                "DTO stripeId: " + response.getStripeId()
+            );
+            return response;
+        } catch (StripeException e) {
+
             throw new RuntimeException(
-                "Failed to create Stripe Connect account" + e
+                    "Failed to create Stripe Connect account: "+ e.getMessage(), e
             );
         }
     }
