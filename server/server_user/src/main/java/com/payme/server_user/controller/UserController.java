@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.payme.security.AppUserDetails;
+import com.payme.server_user.DTO.ApiResponse;
 import com.payme.server_user.DTO.req_dto.MerchantReg_req_dto;
 import com.payme.server_user.DTO.req_dto.MerchantShop_req_dto;
 import com.payme.server_user.DTO.req_dto.UserLogin_req_dto;
@@ -41,10 +42,15 @@ public class UserController {
     }
 
     @PostMapping("/reg/merchant")
-    public ResponseEntity<MerchantReg_res_dto> regMerchantControl(@Valid @RequestBody MerchantReg_req_dto data) {
+    public ResponseEntity<ApiResponse<MerchantReg_res_dto>> regMerchantControl(@Valid @RequestBody MerchantReg_req_dto data) {
         
         MerchantReg_res_dto savedUser =  userService.registerMerchantService(data);
-        return ResponseEntity.ok(savedUser);
+        ApiResponse<MerchantReg_res_dto> response = ApiResponse.<MerchantReg_res_dto>builder()
+            .status(true)
+            .message("Merchant registered successfully")
+            .resData(savedUser)
+            .build();
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/login")
