@@ -29,8 +29,8 @@ public class authConfig {
             .csrf(csrf -> csrf.disable()) // suitable for stateless REST APIs
             .authorizeHttpRequests(auth ->
                     auth
-                    .requestMatchers(HttpMethod.POST, "/payme/api/user/reg").permitAll() // allow registration endpoint
-                    .requestMatchers(HttpMethod.POST, "/payme/api/user/merchant-reg").permitAll() // allow merchant registration endpoint
+                    .requestMatchers(HttpMethod.POST, "/payme/api/user/reg/customer").permitAll() // allow registration endpoint
+                    .requestMatchers(HttpMethod.POST, "/payme/api/user/reg/merchant").permitAll() // allow merchant registration endpoint
                     .requestMatchers(HttpMethod.POST, "/payme/api/user/login").permitAll() // allow login endpoint
                     .anyRequest().authenticated() // all other requests require authentication
             ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
