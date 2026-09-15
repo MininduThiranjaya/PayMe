@@ -28,7 +28,7 @@ public class PaymentServiceClient {
         try {
             ApiResponse<RegStripeConnectAcc_res_dto> response =
                 webClient
-                    .post()
+                    .get()
                     .uri("/auth/reg/stripe-connect-acc")
                     .retrieve()
                     .onStatus(
