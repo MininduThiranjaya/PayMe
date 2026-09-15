@@ -33,8 +33,8 @@ public class PaymentService {
             // 2. Create onboarding link
             AccountLinkCreateParams accountLinkParams = AccountLinkCreateParams.builder()
                     .setAccount(stripeAccountId)
-                    .setRefreshUrl("http://localhost:50438/merchant/stripe/reg/refresh")
-                    .setReturnUrl("http://localhost:50438/merchant/stripe/reg/success")
+                    .setRefreshUrl("http://localhost:50438/#/merchant/stripe/reg/refresh")
+                    .setReturnUrl("http://localhost:50438/#/merchant/stripe/reg/success")
                     .setType(AccountLinkCreateParams.Type.ACCOUNT_ONBOARDING)
                     .build();
             AccountLink accountLink = stripeClient
