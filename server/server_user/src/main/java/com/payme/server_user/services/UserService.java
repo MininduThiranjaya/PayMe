@@ -118,9 +118,11 @@ public class UserService {
         MerchantModel savedUser = merchantRepo.save(user);
         // Call Payment Service
         // If this fails, PaymentServiceClient throws exception
-        RegStripeConnectAcc_res_dto stripeResponse =
-            paymentServiceClient.registerStripeConnectAccount();
-        savedUser.setStripeAccountId(stripeResponse.getStripId());
+        RegStripeConnectAcc_res_dto stripeResponse = paymentServiceClient.registerStripeConnectAccount();
+        savedUser.setStripeAccountId(stripeResponse.getStripeId());
+        savedUser.setChargesEnabled(stripeResponse.getChargesEnabled());
+        savedUser.setPayoutsEnabled(stripeResponse.getPayoutsEnabled());
+        savedUser.setDetailsSubmitted(stripeResponse.getDetailsSubmitted());
 
         List<Shop_res_dto> shops = savedUser.getShopDetails()
             .stream()
@@ -136,6 +138,9 @@ public class UserService {
             savedUser.getUserName(),
             savedUser.getRoles(),
             stripeResponse.getStripeOnboardingURL(),
+            stripeResponse.getChargesEnabled(),
+            stripeResponse.getPayoutsEnabled(),
+            stripeResponse.getDetailsSubmitted(),
             savedUser.getMerchantStatus(),
             shops
         );
@@ -182,9 +187,11 @@ public class UserService {
             Set<UserModel.Role> updatedRoles =new HashSet<>(merchant.getRoles());
             updatedRoles.add(UserModel.Role.MERCHANT);
             merchant.setRoles(updatedRoles);
-            RegStripeConnectAcc_res_dto stripeResponse =
-                paymentServiceClient.registerStripeConnectAccount();
-            merchant.setStripeAccountId(stripeResponse.getStripId());
+            RegStripeConnectAcc_res_dto stripeResponse = paymentServiceClient.registerStripeConnectAccount();
+            merchant.setStripeAccountId(stripeResponse.getStripeId());
+            merchant.setChargesEnabled(stripeResponse.getChargesEnabled());
+            merchant.setPayoutsEnabled(stripeResponse.getPayoutsEnabled());
+            merchant.setDetailsSubmitted(stripeResponse.getDetailsSubmitted());
             for (int i = 0; i < data.getShopNames().size(); i++) {
                 ShopModel shop = new ShopModel();
                 shop.setShopName(data.getShopNames().get(i).trim());
@@ -232,6 +239,9 @@ public class UserService {
                 merchant.getUserName(),
                 merchant.getRoles(),
                 merchant.getMerchantStatus(),
+                merchant.getChargesEnabled(),
+                merchant.getPayoutsEnabled(),
+                merchant.getDetailsSubmitted(),
                 merchant.getCreatedAt(),
                 merchant.getUpdatedAt(),
                 shops
