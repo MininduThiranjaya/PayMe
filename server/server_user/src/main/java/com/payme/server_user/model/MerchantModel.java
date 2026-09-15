@@ -25,6 +25,9 @@ public class MerchantModel extends UserModel {
     @OneToMany(mappedBy = "merchant", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<ShopModel> shopNames = new ArrayList<>();
     private String stripeAccountId;
+    private Boolean chargesEnabled;
+    private Boolean payoutsEnabled;
+    private Boolean detailsSubmitted;
     @Enumerated(EnumType.STRING)
     private MerchantStatus merchantStatus =
             MerchantStatus.pending_stripe_reg;

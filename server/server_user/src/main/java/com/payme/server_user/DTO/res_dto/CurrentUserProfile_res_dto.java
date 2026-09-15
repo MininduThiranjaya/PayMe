@@ -19,16 +19,22 @@ public class CurrentUserProfile_res_dto {
     private String userName;
     private Set<UserModel.Role> roles;
     private MerchantStatus merchantStatus;
+    private Boolean chargesEnabled;
+    private Boolean payoutsEnabled;
+    private Boolean detailsSubmitted;
     private LocalDateTime createdAt;
     private LocalDateTime updatedAt;
     private List<Shop_res_dto> shops;
 
-    public CurrentUserProfile_res_dto(String nic, String stripeAccountId, String userName, Set<UserModel.Role> roles, MerchantStatus merchantStatus, LocalDateTime createdAt, LocalDateTime updatedAt, List<Shop_res_dto> shops) {
+    public CurrentUserProfile_res_dto(String nic, String stripeAccountId, String userName, Set<UserModel.Role> roles, MerchantStatus merchantStatus, Boolean chargesEnabled, Boolean payoutsEnabled, Boolean detailsSubmitted, LocalDateTime createdAt, LocalDateTime updatedAt, List<Shop_res_dto> shops) {
         this.nic = nic;
         this.stripeAccountId = stripeAccountId;
         this.userName = userName;
         this.roles = roles;
         this.merchantStatus = merchantStatus;
+        this.chargesEnabled = chargesEnabled;
+        this.payoutsEnabled = payoutsEnabled;
+        this.detailsSubmitted = detailsSubmitted;
         this.createdAt = createdAt;
         this.updatedAt = updatedAt;
         this.shops = shops;

@@ -13,6 +13,9 @@ import lombok.Setter;
 @Setter 
 public class RegStripeConnectAcc_res_dto {
     
-    private String stripId;
+    private String stripeId;
     private String stripeOnboardingURL;
+    private Boolean chargesEnabled;
+    private Boolean payoutsEnabled;
+    private Boolean detailsSubmitted;
 }

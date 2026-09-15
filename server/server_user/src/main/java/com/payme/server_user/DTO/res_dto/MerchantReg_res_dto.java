@@ -17,6 +17,9 @@ public class MerchantReg_res_dto extends UserReg_res_dto {
     private String stripeOnboardingURL;
     private MerchantStatus merchantStatus;
     private List<Shop_res_dto> shops;
+    private Boolean chargesEnabled;
+    private Boolean payoutsEnabled;
+    private Boolean detailsSubmitted;
 
     public MerchantReg_res_dto(
             String nic,
@@ -24,6 +27,9 @@ public class MerchantReg_res_dto extends UserReg_res_dto {
             String userName,
             Set<UserModel.Role> roles,
             String stripeOnboardingURL,
+            Boolean chargesEnabled,
+            Boolean payoutsEnabled,
+            Boolean detailsSubmitted,
             MerchantStatus merchantStatus,
             List<Shop_res_dto> shops
     ) {
@@ -31,6 +37,9 @@ public class MerchantReg_res_dto extends UserReg_res_dto {
         this.stripeAccountId = stripeAccountId;
         this.stripeOnboardingURL = stripeOnboardingURL;
         this.merchantStatus = merchantStatus;
+        this.chargesEnabled = chargesEnabled;
+        this.payoutsEnabled = payoutsEnabled;
+        this.detailsSubmitted = detailsSubmitted;
         this.shops = shops;
     }
 }
