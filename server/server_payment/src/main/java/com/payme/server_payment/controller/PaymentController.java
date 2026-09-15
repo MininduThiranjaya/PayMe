@@ -2,6 +2,7 @@ package com.payme.server_payment.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -18,7 +19,7 @@ public class PaymentController {
 
     private final PaymentService service;
     
-    @PostMapping("auth/reg/stripe-connect-acc")
+    @GetMapping("/reg/stripe-connect-acc")
     public ResponseEntity<ApiResponse> regStripeConnectAccountController() {
         
         RegStripeConnectAcc_res_dto res = service.regStripeConnectAccountService();
