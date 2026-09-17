@@ -4,6 +4,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+import java.util.Optional;
 
 import com.payme.server_user.model.MerchantModel;
 
@@ -19,4 +20,5 @@ public interface MerchantRepo extends JpaRepository<MerchantModel, Long> {
                 """,
                 nativeQuery=true
     ) int createMerchantRecord(@Param("userId") long userId);
+    Optional<MerchantModel> findByStripeAccountId(String stripeAccountId);
 }
