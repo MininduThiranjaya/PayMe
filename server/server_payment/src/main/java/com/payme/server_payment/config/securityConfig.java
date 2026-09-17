@@ -23,6 +23,7 @@ import org.springframework.security.oauth2.jwt.NimbusJwtDecoder;
 import org.springframework.security.oauth2.server.resource.authentication.JwtAuthenticationConverter;
 import org.springframework.security.oauth2.server.resource.authentication.JwtGrantedAuthoritiesConverter;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.web.reactive.function.client.WebClient;
 
 import io.jsonwebtoken.security.Keys;
 
@@ -40,6 +41,7 @@ public class securityConfig {
                 auth
                     // .requestMatchers(HttpMethod.POST, "/payme/api/order/set-new-order").permitAll()
                     .requestMatchers(HttpMethod.GET, "/payme/api/payment/reg/stripe-connect-acc").permitAll()
+                    .requestMatchers("/payme/api/payment/stripe/webhook/**").permitAll()
                     .anyRequest().authenticated()
             ).oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> 
                 jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())
@@ -77,5 +79,10 @@ public class securityConfig {
             authoritiesConverter
         );
         return converter;
+    }
+
+    @Bean 
+    public WebClient.Builder webClientBuilder() {
+        return WebClient.builder();
     }
 }
