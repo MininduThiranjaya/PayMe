@@ -30,7 +30,7 @@ public class MerchantModel extends UserModel {
     private Boolean detailsSubmitted;
     @Enumerated(EnumType.STRING)
     private MerchantStatus merchantStatus =
-            MerchantStatus.pending_stripe_reg;
+            MerchantStatus.pending_stripe_onboarding;
 
     public void addShopDetails(ShopModel shop) {
         shopNames.add(shop);
