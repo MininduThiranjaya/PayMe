@@ -1,6 +1,10 @@
 import 'package:client/config/DioClient.dart';
 import 'package:client/providers/AuthProvider.dart';
+import 'package:client/providers/RegistrationProvider.dart';
+import 'package:client/providers/SellProductProvider.dart';
 import 'package:client/services/Login_Service.dart';
+import 'package:client/services/Register_Service.dart';
+import 'package:client/services/SellProduct_Service.dart';
 import 'package:client/storage/Role_Storage.dart';
 import 'package:client/storage/Token_Storage.dart';
 import 'package:flutter/material.dart';
@@ -10,16 +14,37 @@ import 'package:provider/provider.dart';
 void main() {
 
   final dio = DioClient();
+  final loginService = Login_Service(dioClient: dio);
+  final registerService = Register_Service(dioClient: dio);
+  final sellProductService = SellProduct_Service(dioClient: dio);
   runApp(
-    ChangeNotifierProvider(
-      lazy: false,
-      create: (_) => AuthProvider(
-        loginService: Login_Service(dioClient: dio),
-        tokenStorage: Token_Storage(),
-        roleStorage: Role_Storage()
-      )..getMe(),
-      child: const MyApp()
-    )  
+    MultiProvider(
+      providers: [
+        ChangeNotifierProvider(
+          lazy: false,
+          create: (_) => AuthProvider(
+            loginService: loginService,
+            tokenStorage: Token_Storage(),
+            roleStorage: Role_Storage(),
+          )..getMe(),
+        ),
+
+        ChangeNotifierProvider(
+          create: (_) => RegistrationProvider(
+            registerService: registerService,
+          ),
+        ),
+
+        ChangeNotifierProvider(
+          create: (_) =>
+              SellProductProvider(
+            sellProductService:
+                sellProductService,
+          ),
+        ),
+      ],
+      child: const MyApp(),
+    ),
   );
 }
 
@@ -34,7 +59,7 @@ class MyApp extends StatelessWidget {
       theme: ThemeData(
         colorScheme: .fromSeed(seedColor: Colors.deepPurple),
       ),
-      initialRoute: '/',
+      // initialRoute: '/',
       routes: Approutes.appRoutes,
     );
   }
