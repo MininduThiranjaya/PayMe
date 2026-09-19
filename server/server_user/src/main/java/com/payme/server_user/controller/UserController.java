@@ -35,10 +35,15 @@ public class UserController {
 
 
     @PostMapping("/reg/customer")
-    public ResponseEntity<UserReg_res_dto> regUserControl(@Valid @RequestBody UserReg_req_dto data) {
+    public ResponseEntity<ApiResponse<UserReg_res_dto>> regUserControl(@Valid @RequestBody UserReg_req_dto data) {
         
         UserReg_res_dto savedUser =  userService.registerCustomerService(data);
-        return ResponseEntity.ok(savedUser);
+        ApiResponse response = ApiResponse.<UserReg_res_dto>builder()
+            .status(true)
+            .message("Customer registered successfully")
+            .resData(savedUser)
+            .build();
+        return ResponseEntity.ok(response);
     }
 
     @PostMapping("/reg/merchant")
@@ -54,32 +59,52 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public ResponseEntity<UserLogin_res_dto> userLoginController(@Valid @RequestBody UserLogin_req_dto data) {
+    public ResponseEntity<ApiResponse<UserLogin_res_dto>> userLoginController(@Valid @RequestBody UserLogin_req_dto data) {
         
         UserLogin_res_dto loggedUser = userService.userLoginService(data.getNic(), data.getPassword());
-        return ResponseEntity.ok(loggedUser); 
+        ApiResponse response = ApiResponse.<UserLogin_res_dto>builder()
+            .status(true)
+            .message("User loggedin successfully")
+            .resData(loggedUser)
+            .build();
+        return ResponseEntity.ok(response); 
     }
 
     @GetMapping("/me")
-    public ResponseEntity<CurrentUserProfile_res_dto> getCurrentUserDetailsController(@AuthenticationPrincipal AppUserDetails currentUser) {
+    public ResponseEntity<ApiResponse<CurrentUserProfile_res_dto>> getCurrentUserDetailsController(@AuthenticationPrincipal AppUserDetails currentUser) {
         
         CurrentUserProfile_res_dto currentUserDetails = userService.getCurrentUserDetailsService(currentUser.getUsername());
-        return ResponseEntity.ok(currentUserDetails);
+        ApiResponse response = ApiResponse.<CurrentUserProfile_res_dto>builder()
+            .status(true)
+            .message("Get authoriz user succssfully")
+            .resData(currentUserDetails)
+            .build();
+        return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasRole('CUSTOMER')")
     @PutMapping("/update/role-merchant")
-    public ResponseEntity<CurrentUserProfile_res_dto> updateUserRoleToMerchantController(@AuthenticationPrincipal AppUserDetails currentUser, @Valid @RequestBody MerchantShop_req_dto data) {
+    public ResponseEntity<ApiResponse<CurrentUserProfile_res_dto>> updateUserRoleToMerchantController(@AuthenticationPrincipal AppUserDetails currentUser, @Valid @RequestBody MerchantShop_req_dto data) {
 
         CurrentUserProfile_res_dto updatedUserCustomer = userService.updateUserRoleToMerchantService(currentUser.getUsername(), data);
-        return ResponseEntity.ok(updatedUserCustomer);
+        ApiResponse response = ApiResponse.<CurrentUserProfile_res_dto>builder()
+            .status(true)
+            .message("Customer add additional role merchant successfully")
+            .resData(updatedUserCustomer)
+            .build();
+        return ResponseEntity.ok(response);
     }
 
     @PreAuthorize("hasRole('MERCHANT')")
     @PutMapping("/update/role-customer")
-    public ResponseEntity<CurrentUserProfile_res_dto> updateUserRoleToCustomerController(@AuthenticationPrincipal AppUserDetails currentUser) {
+    public ResponseEntity<ApiResponse<CurrentUserProfile_res_dto>> updateUserRoleToCustomerController(@AuthenticationPrincipal AppUserDetails currentUser) {
 
         CurrentUserProfile_res_dto updatedUserMerchant = userService.updateUserRoleToCustomerService(currentUser.getUsername());
-        return ResponseEntity.ok(updatedUserMerchant);
+        ApiResponse response = ApiResponse.<CurrentUserProfile_res_dto>builder()
+            .status(true)
+            .message("Merchant add additional role customer successfully")
+            .resData(updatedUserMerchant)
+            .build();
+        return ResponseEntity.ok(response);
     }
 }
