@@ -9,7 +9,8 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor
-public class CustomerClaimOrder_req_dto {
+public class 
+ {
     
     @NotNull(message = "Order id is required")
     @Positive(message = "Order id must be greater than 0")

@@ -1,10 +1,106 @@
+// import 'package:client/config/ApiEndpoints.dart';
+// import 'package:client/config/DioClient.dart';
+// import 'package:client/models/UserProfile.dart';
+// import 'package:dio/dio.dart';
+
+// class Login_Service {
+
+//   final DioClient dioClient;
+
+//   Login_Service({
+//     required this.dioClient,
+//   });
+
+//   // login service
+//   Future<String> login({required String nic, required String password}) async {
+
+//     try {
+//       final response = await dioClient.dio.post(
+//         ApiEndpoints.login,
+//         data: {
+//             'nic': nic,
+//             'password': password,
+//           }
+//       );
+//       final data = response.data;
+//       if (data is! Map) {
+//         throw Exception('Invalid login response');
+//       }
+//       final token =  data['token'];
+//       if (token == null || token.toString().isEmpty) {
+//           throw Exception('Token was not returned');
+//       }
+
+//       return token.toString();
+//     } on DioException catch (error) {
+
+//       final responseData = error.response?.data;
+//       final statusCode = error.response?.statusCode;
+//       if (statusCode == 401) {
+//         final code = responseData is Map ? responseData['code']?.toString() : null;
+//         switch (code) {
+//           case 'INVALID_CREDENTIALS':
+//             throw Exception('Invalid NIC or password');
+
+//           default:
+//             throw Exception('Unauthorized user');
+//         }
+//       }
+//       rethrow;
+//     }
+//   }
+
+//   // me
+//   Future<UserProfile> getCurrentUserPrrofile({required String token}) async {
+    
+//     try {
+//       final response = await dioClient.dio.get(
+//       ApiEndpoints.me,
+//       options: Options(
+//           headers: {
+//             'Authorization': 'Bearer $token',
+//           },
+//         ),
+//     );
+//     final data = response.data;
+//     if (data is! Map<String, dynamic>) {
+//         throw Exception('Invalid user profile response');
+//     }
+//     return UserProfile.fromJson(data);
+//     } on DioException catch(error) {
+
+//       final responseData = error.response?.data;
+//       if (error.response?.statusCode == 401) {
+//         final code = responseData is Map ? responseData['code'] : null;
+//         switch (code) {
+//           case 'TOKEN_EXPIRED':
+//             throw Exception('Session expired');
+
+//           case 'INVALID_TOKEN':
+//           case 'AUTHENTICATION_FAILED':
+//           case 'USER_NOT_FOUND':
+//             throw Exception('Unauthorized user');
+
+//           default:
+//             throw Exception('Unauthorized user');
+//         }
+//       }
+//       if (responseData is Map &&
+//           responseData['message'] != null) {
+//         throw Exception(responseData['message'].toString());
+//       }
+//       rethrow;
+//     }
+//   }
+// }
+
 import 'package:client/config/ApiEndpoints.dart';
 import 'package:client/config/DioClient.dart';
+import 'package:client/models/ApiResponse.dart';
 import 'package:client/models/UserProfile.dart';
 import 'package:dio/dio.dart';
 
 class Login_Service {
-
   final DioClient dioClient;
 
   Login_Service({
@@ -12,83 +108,170 @@ class Login_Service {
   });
 
   // login service
-  Future<String> login({required String nic, required String password}) async {
-
+  Future<String> login({
+    required String nic,
+    required String password,
+  }) async {
     try {
       final response = await dioClient.dio.post(
         ApiEndpoints.login,
         data: {
-            'nic': nic,
-            'password': password,
-          }
+          'nic': nic,
+          'password': password,
+        },
       );
+
       final data = response.data;
-      if (data is! Map) {
+
+      if (data is! Map<String, dynamic>) {
         throw Exception('Invalid login response');
       }
-      final token =  data['token'];
+
+      final apiResponse = ApiResponse<dynamic>.fromJson(
+        data,
+        (json) => json,
+      );
+
+      if (!apiResponse.status || apiResponse.resData == null) {
+        throw Exception(
+          apiResponse.message.isNotEmpty
+              ? apiResponse.message
+              : 'Login failed',
+        );
+      }
+
+      final resData = apiResponse.resData;
+
+      if (resData is! Map) {
+        throw Exception('Invalid login response data');
+      }
+
+      final token = resData['token'];
+
       if (token == null || token.toString().isEmpty) {
-          throw Exception('Token was not returned');
+        throw Exception('Token was not returned');
       }
 
       return token.toString();
     } on DioException catch (error) {
-
       final responseData = error.response?.data;
       final statusCode = error.response?.statusCode;
+
       if (statusCode == 401) {
-        final code = responseData is Map ? responseData['code']?.toString() : null;
+        final code = responseData is Map
+            ? responseData['code']?.toString()
+            : null;
+
         switch (code) {
           case 'INVALID_CREDENTIALS':
-            throw Exception('Invalid NIC or password');
+            throw Exception(
+              'Invalid NIC or password',
+            );
 
           default:
-            throw Exception('Unauthorized user');
+            throw Exception(
+              'Unauthorized user',
+            );
         }
       }
+
+      if (statusCode == 400) {
+        final message = responseData is Map
+            ? responseData['message']?.toString()
+            : null;
+
+        throw Exception(
+          message ?? 'Invalid login details',
+        );
+      }
+
+      if (responseData is Map &&
+          responseData['message'] != null) {
+        throw Exception(
+          responseData['message'].toString(),
+        );
+      }
+
       rethrow;
     }
   }
 
   // me
-  Future<UserProfile> getCurrentUserPrrofile({required String token}) async {
-    
+  Future<UserProfile> getCurrentUserPrrofile({
+    required String token,
+  }) async {
     try {
       final response = await dioClient.dio.get(
-      ApiEndpoints.me,
-      options: Options(
+        ApiEndpoints.me,
+        options: Options(
           headers: {
             'Authorization': 'Bearer $token',
           },
         ),
-    );
-    final data = response.data;
-    if (data is! Map<String, dynamic>) {
-        throw Exception('Invalid user profile response');
-    }
-    return UserProfile.fromJson(data);
-    } on DioException catch(error) {
+      );
 
+      final data = response.data;
+
+      if (data is! Map<String, dynamic>) {
+        throw Exception(
+          'Invalid user profile response',
+        );
+      }
+
+      final apiResponse =
+          ApiResponse<UserProfile>.fromJson(
+        data,
+        (json) => UserProfile.fromJson(
+          json as Map<String, dynamic>,
+        ),
+      );
+
+      if (!apiResponse.status ||
+          apiResponse.resData == null) {
+        throw Exception(
+          apiResponse.message.isNotEmpty
+              ? apiResponse.message
+              : 'Failed to fetch user profile',
+        );
+      }
+
+      return apiResponse.resData!;
+    } on DioException catch (error) {
       final responseData = error.response?.data;
-      if (error.response?.statusCode == 401) {
-        final code = responseData is Map ? responseData['code'] : null;
+      final statusCode = error.response?.statusCode;
+
+      if (statusCode == 401) {
+        final code = responseData is Map
+            ? responseData['code']?.toString()
+            : null;
+
         switch (code) {
           case 'TOKEN_EXPIRED':
-            throw Exception('Session expired');
+            throw Exception(
+              'Session expired',
+            );
 
           case 'INVALID_TOKEN':
           case 'AUTHENTICATION_FAILED':
           case 'USER_NOT_FOUND':
-            throw Exception('Unauthorized user');
+            throw Exception(
+              'Unauthorized user',
+            );
 
           default:
-            throw Exception('Unauthorized user');
+            throw Exception(
+              'Unauthorized user',
+            );
         }
       }
+
       if (responseData is Map &&
           responseData['message'] != null) {
-        throw Exception(responseData['message'].toString());
+        throw Exception(
+          responseData['message'].toString(),
+        );
       }
+
       rethrow;
     }
   }

@@ -3,6 +3,8 @@ import 'package:client/screens/common/RoleSelection_Screen.dart';
 import 'package:client/screens/common/UserDashboard_Screen.dart';
 import 'package:client/screens/customer/CustomerDashboard_Screen.dart';
 import 'package:client/screens/merchant/MerchantDashboard_Screen.dart';
+import 'package:client/screens/merchant/StripeRegRefresh_Screen.dart';
+import 'package:client/screens/merchant/StripeRegSuccess_Screen.dart';
 import 'package:client/screens/splash_screen/Splash_Screen.dart';
 import 'package:client/screens/common/introScreens/Intro_Screen.dart';
 import 'package:client/screens/common/Login_Screen.dart';
@@ -20,6 +22,8 @@ class Approutes {
     // customer auth route
     "/customer/dashboard": (context) => const AuthGuard(allowedRoles: {'CUSTOMER'}, child: CustomerDashboard_Screen()),
     // merchant auth route
-    "/merchant/dashboard": (context) => const AuthGuard(allowedRoles: {'MERCHANT'}, child: MerchantDashboard_Screen())
+    "/merchant/dashboard": (context) => const AuthGuard(allowedRoles: {'MERCHANT'}, child: MerchantDashboard_Screen()),
+    "/merchant/stripe/reg/success": (context) => const StripeRegSuccess_Screen(),
+    "/merchant/stripe/reg/refresh": (context) => const StripeRegRefresh_Screen(),
   };
 }
