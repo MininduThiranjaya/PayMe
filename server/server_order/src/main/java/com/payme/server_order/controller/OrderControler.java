@@ -8,13 +8,16 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.security.oauth2.jwt.Jwt;
 
-import jakarta.validation.Valid;
-
+import com.payme.server_order.DTO.ApiResponse;
 import com.payme.server_order.DTO.req_dto.NewOrder_req_dto;
-import com.payme.server_order.DTO.res_dto.NewOrder_res_dto;
+import com.payme.server_order.DTO.req_dto.CustomerClaimOrder_req_dto;
+import com.payme.server_order.DTO.res_dto.CustomerClaimOrder_res_dto;
 import com.payme.server_order.service.OrderService;
 
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
 
@@ -25,20 +28,35 @@ public class OrderControler {
 
     private final OrderService orderService;
 
-    @PreAuthorize("hasRole('MERCHANT')")
-    @PostMapping("/set-new-order")
-    public ResponseEntity<Long> setNewOrderController(@Valid @RequestBody NewOrder_req_dto data) {  
+    @PreAuthorize("hasAuthority('ROLE_MERCHANT')")
+    @PostMapping("/create-order")
+    public ResponseEntity<ApiResponse<Long>> setNewOrderController(
+        @Valid @RequestBody NewOrder_req_dto data,
+        @AuthenticationPrincipal Jwt jwt
+    ) {  
 
-        long orderId = orderService.setNewOrderService(data);
-        return ResponseEntity.ok(orderId);
+        long orderId = orderService.setNewOrderService(data, jwt);
+        ApiResponse response = ApiResponse.<Long>builder()
+            .status(true)
+            .message("Set new order successfully")
+            .resData(orderId)
+            .build();
+        return ResponseEntity.ok(response);
     }
 
-    @PreAuthorize("hasAnyRole('CUSTOMER', 'MERCHANT')")
-    @GetMapping("/get-order-by-id/{id}")
-    public ResponseEntity<NewOrder_res_dto> getOrderByIdController(@PathVariable long id) {
+    @PreAuthorize("hasAuthority('ROLE_CUSTOMER')")
+    @PostMapping("/claim-order")
+    public ResponseEntity<ApiResponse<CustomerClaimOrder_res_dto>> customerClaimNewOrderController(
+        @Valid @RequestBody CustomerClaimOrder_req_dto data,
+        @AuthenticationPrincipal Jwt jwt
+    ) {  
 
-        NewOrder_res_dto order = orderService.getOrderByIdService(id);
-        return ResponseEntity.ok(order);
+        CustomerClaimOrder_res_dto orderId = orderService.customerClaimNewOrderService(data, jwt);
+        ApiResponse response = ApiResponse.<CustomerClaimOrder_res_dto>builder()
+            .status(true)
+            .message("Set new order successfully")
+            .resData(orderId)
+            .build();
+        return ResponseEntity.ok(response);
     }
-    
 }
