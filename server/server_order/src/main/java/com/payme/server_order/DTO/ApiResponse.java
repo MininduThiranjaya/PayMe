@@ -1,0 +1,19 @@
+package com.payme.server_order.DTO;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@AllArgsConstructor
+@NoArgsConstructor
+@Getter 
+@Setter 
+@Builder
+public class ApiResponse<T> {
+    
+    boolean status;
+    String message;
+    T resData;
+}
