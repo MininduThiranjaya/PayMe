@@ -3,11 +3,12 @@ package com.payme.server_order.DTO.req_dto;
 import java.util.ArrayList;
 import java.util.List;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.Valid;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.Positive;
 
 
 @Getter
@@ -15,11 +16,7 @@ import jakarta.validation.constraints.Positive;
 @NoArgsConstructor
 public class NewOrder_req_dto {
     
-    @NotNull(message = "Merchant id is required")
-    @Positive(message = "Merchant id must be greater than 0")
-    private long merchantId;
-    @NotNull(message = "Customer id is required")
-    @Positive(message = "Customer id must be greater than 0")
-    private long customerId;
-    private List<NewOrderItem_req_dto> orderItem = new ArrayList<>();
+    @NotEmpty(message = "At least one order item is required")
+    @Valid
+    private List<@Valid NewOrderItem_req_dto> orderItem = new ArrayList<>();
 }
