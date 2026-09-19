@@ -116,8 +116,7 @@ public class UserService {
         }
 
         MerchantModel savedUser = merchantRepo.save(user);
-        // Call Payment Service
-        // If this fails, PaymentServiceClient throws exception
+        // call payment service
         RegStripeConnectAcc_res_dto stripeResponse = paymentServiceClient.registerStripeConnectAccount();
         savedUser.setStripeAccountId(stripeResponse.getStripeId());
         savedUser.setChargesEnabled(stripeResponse.getChargesEnabled());
