@@ -21,12 +21,11 @@ public class StripeWebhookService {
     private String webhookSecret;
     private final UserServiceClient service;
 
-    public void  handleStripeWebhookService(String payload, String signature) {
+    public void handleStripeWebhookService(String payload, String signature) {
 
         Event event = constructWebhookEvent(
                 payload,
-                signature
-        );
+                signature);
         handleWebhookEvent(event);
     }
 
@@ -36,8 +35,7 @@ public class StripeWebhookService {
             return Webhook.constructEvent(
                     payload,
                     signature,
-                    webhookSecret
-            );
+                    webhookSecret);
         } catch (SignatureVerificationException e) {
 
             throw new RuntimeException("Invalid Stripe webhook signature", e);
@@ -58,13 +56,23 @@ public class StripeWebhookService {
 
     private void handleAccountUpdatedEvent(Event event) {
 
-        StripeObject stripeObject =
-            event
+        StripeObject stripeObject = event
                 .getDataObjectDeserializer()
                 .getObject()
-                .orElse(null);
+                .orElseGet(() -> {
+                    try {
+                        return event
+                                .getDataObjectDeserializer()
+                                .deserializeUnsafe();
+                    } catch (Exception e) {
+                        throw new RuntimeException(
+                                "Unable to deserialize Stripe account data",
+                                e);
+                    }
+                });
         if (!(stripeObject instanceof Account account)) {
-            throw new RuntimeException("Stripe account data was not found in account.updated event");
+            throw new RuntimeException(
+                    "Stripe event object is not an Account");
         }
         handleAccountUpdated(account);
     }
@@ -75,10 +83,8 @@ public class StripeWebhookService {
         Boolean chargesEnabled = account.getChargesEnabled();
         Boolean payoutsEnabled = account.getPayoutsEnabled();
         Boolean detailsSubmitted = account.getDetailsSubmitted();
-        System.out.println("Stripe account updated: " + stripeAccountId);
 
-        StripeWebhookUpdateAcc_req_dto data =
-            StripeWebhookUpdateAcc_req_dto.builder()
+        StripeWebhookUpdateAcc_req_dto data = StripeWebhookUpdateAcc_req_dto.builder()
                 .stripeId(stripeAccountId)
                 .chargesEnabled(chargesEnabled)
                 .payoutsEnabled(payoutsEnabled)
