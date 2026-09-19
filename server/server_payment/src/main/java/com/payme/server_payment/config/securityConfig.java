@@ -41,7 +41,7 @@ public class securityConfig {
                 auth
                     // .requestMatchers(HttpMethod.POST, "/payme/api/order/set-new-order").permitAll()
                     .requestMatchers(HttpMethod.GET, "/payme/api/payment/reg/stripe-connect-acc").permitAll()
-                    .requestMatchers("/payme/api/payment/stripe/webhook/**").permitAll()
+                    .requestMatchers(HttpMethod.POST, "/payme/api/payment/stripe/webhook").permitAll()
                     .anyRequest().authenticated()
             ).oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> 
                 jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())

@@ -32,7 +32,7 @@ public class authConfig {
                     .requestMatchers(HttpMethod.POST, "/payme/api/user/reg/customer").permitAll() // allow registration endpoint
                     .requestMatchers(HttpMethod.POST, "/payme/api/user/reg/merchant").permitAll() // allow merchant registration endpoint
                     .requestMatchers(HttpMethod.POST, "/payme/api/user/login").permitAll() // allow login endpoint
-                    .requestMatchers("/payme/api/user/internal/merchant/**").permitAll() // allow registration endpoint
+                    .requestMatchers(HttpMethod.PUT, "/payme/api/user/internal/merchant/update/stripe-status").permitAll() // allow registration endpoint
                     .anyRequest().authenticated() // all other requests require authentication
             ).addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
