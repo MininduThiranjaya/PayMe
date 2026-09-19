@@ -12,9 +12,9 @@ import lombok.Setter;
 @Getter 
 @Setter 
 @Builder
-public class ApiResponse {
+public class ApiResponse<T> {
     
     boolean status;
     String message;
-    Object resData;
+    T resData;
 }

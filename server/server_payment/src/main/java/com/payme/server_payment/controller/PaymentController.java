@@ -20,10 +20,10 @@ public class PaymentController {
     private final PaymentService service;
     
     @GetMapping("/reg/stripe-connect-acc")
-    public ResponseEntity<ApiResponse> regStripeConnectAccountController() {
+    public ResponseEntity<ApiResponse<RegStripeConnectAcc_res_dto>> regStripeConnectAccountController() {
         
         RegStripeConnectAcc_res_dto res = service.regStripeConnectAccountService();
-        ApiResponse response = ApiResponse.builder()
+        ApiResponse response = ApiResponse.<RegStripeConnectAcc_res_dto>builder()
             .status(true)
             .message("Stripe merchant register url fetched successfully")
             .resData(res)
