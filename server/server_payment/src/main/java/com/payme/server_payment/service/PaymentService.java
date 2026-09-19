@@ -21,7 +21,7 @@ public class PaymentService {
     public RegStripeConnectAcc_res_dto regStripeConnectAccountService() {
 
         try {
-            // 1. Create Stripe Express connected account
+            // create Stripe Express connected account
             AccountCreateParams accountParams = AccountCreateParams.builder()
                     .setType(AccountCreateParams.Type.EXPRESS)
                     .build();
@@ -30,7 +30,7 @@ public class PaymentService {
                     .accounts()
                     .create(accountParams);
             String stripeAccountId = account.getId();
-            // 2. Create onboarding link
+            // create onboarding link
             AccountLinkCreateParams accountLinkParams = AccountLinkCreateParams.builder()
                     .setAccount(stripeAccountId)
                     .setRefreshUrl("http://localhost:50438/#/merchant/stripe/reg/refresh")
@@ -41,7 +41,7 @@ public class PaymentService {
                     .v1()
                     .accountLinks()
                     .create(accountLinkParams);
-            // 3. Return useful information
+            // return useful information
             RegStripeConnectAcc_res_dto response =  RegStripeConnectAcc_res_dto.builder()
                     .stripeId(stripeAccountId)
                     .stripeOnboardingURL(accountLink.getUrl())
@@ -49,9 +49,6 @@ public class PaymentService {
                     .payoutsEnabled(account.getPayoutsEnabled())
                     .detailsSubmitted(account.getDetailsSubmitted())
                     .build();
-            System.out.println(
-                "DTO stripeId: " + response.getStripeId()
-            );
             return response;
         } catch (StripeException e) {
 
