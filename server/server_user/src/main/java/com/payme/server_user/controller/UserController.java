@@ -82,11 +82,4 @@ public class UserController {
         CurrentUserProfile_res_dto updatedUserMerchant = userService.updateUserRoleToCustomerService(currentUser.getUsername());
         return ResponseEntity.ok(updatedUserMerchant);
     }
-
-    @PreAuthorize("hasRole('MERCHANT')")
-    @GetMapping("/test")
-    public String testApi() {
-        return "only for testing purpose";
-    }
-    
 }
