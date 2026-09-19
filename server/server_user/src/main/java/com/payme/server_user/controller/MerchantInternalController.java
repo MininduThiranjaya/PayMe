@@ -26,6 +26,7 @@ public class MerchantInternalController {
     @PutMapping("/update/stripe-status")
     public ResponseEntity<Void> updateStripeStatusController(@RequestBody StripeWebhookUpdateAcc_req_dto data) {
 
+        System.out.println("Stripe webhook updated data received successfully - user service");
         service.updateStripeStatuService(data);
         return ResponseEntity.ok().build();
     }
