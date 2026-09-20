@@ -5,6 +5,8 @@ import java.util.HashSet;
 import java.util.Set;
 
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.OnDelete;
+import org.hibernate.annotations.OnDeleteAction;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import jakarta.persistence.CollectionTable;
@@ -21,6 +23,8 @@ import jakarta.persistence.Inheritance;
 import jakarta.persistence.InheritanceType;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.Table;
+import com.payme.server_user.enums.Role;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -28,7 +32,7 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 @Entity
-@Table(name="user_details")
+@Table(name = "user_details")
 @Getter
 @Setter
 @AllArgsConstructor
@@ -37,33 +41,39 @@ import lombok.Setter;
 @Inheritance(strategy = InheritanceType.JOINED)
 public class UserModel {
 
-    public enum Role {
-        CUSTOMER,
-        MERCHANT
-    }
-    
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-    @Column(name = "username", nullable = false, unique = false)
+    @Column(name = "username", nullable = false)
     private String userName;
-    @Column(name = "password", nullable = false, unique = false)
+    @Column(name = "password", nullable = false)
     private String password;
     @Column(name = "nic", nullable = false, unique = true)
     private String nic;
     @CreationTimestamp
-    @Column(name = "created_at", nullable = false, unique = true, updatable = false)
+    @Column(
+        name = "created_at",
+        nullable = false,
+        updatable = false
+    )
     private LocalDateTime createdAt;
     @UpdateTimestamp
-    @Column(name = "updated_at", nullable = false, unique = false)
+    @Column(name = "updated_at", nullable = false)
     private LocalDateTime updatedAt;
-    @ElementCollection(fetch = FetchType.EAGER)
+    @ElementCollection(
+        fetch = FetchType.EAGER
+    )
     @CollectionTable(
         name = "user_roles",
-        joinColumns = @JoinColumn(name = "nic")
+        joinColumns = @JoinColumn(
+            name = "nic"
+        )
     )
     @Enumerated(EnumType.STRING)
     @Column(name = "role")
     @Builder.Default
+    @OnDelete(
+        action = OnDeleteAction.CASCADE
+    )
     private Set<Role> roles = new HashSet<>();
 }
