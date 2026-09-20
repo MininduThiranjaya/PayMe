@@ -66,7 +66,7 @@ public class UserModel {
     @CollectionTable(
         name = "user_roles",
         joinColumns = @JoinColumn(
-            name = "nic"
+            name = "user_id"
         )
     )
     @Enumerated(EnumType.STRING)
