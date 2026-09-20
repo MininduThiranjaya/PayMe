@@ -22,6 +22,7 @@ import com.payme.server_user.DTO.res_dto.UserLogin_res_dto;
 import com.payme.server_user.DTO.res_dto.UserReg_res_dto;
 import com.payme.server_user.client.PaymentServiceClient;
 import com.payme.server_user.enums.MerchantStatus;
+import com.payme.server_user.enums.Role;
 import com.payme.server_user.error.exceptions.BadCredentialsExc;
 import com.payme.server_user.error.exceptions.UserAlreadyExistsExc;
 import com.payme.server_user.error.exceptions.UserNotUpdatedExc;
@@ -54,9 +55,9 @@ public class UserService {
         }
 
         UserModel user = new UserModel();
-        UserModel.Role role = UserModel.Role.valueOf(data.getRole());
+        Role role = Role.valueOf(data.getRole());
 
-        if (role != UserModel.Role.CUSTOMER) {
+        if (role != Role.CUSTOMER) {
             throw new IllegalArgumentException(
                 "Customer registration requires the CUSTOMER role"
             );
@@ -93,9 +94,9 @@ public class UserService {
         }
 
         MerchantModel user = new MerchantModel();
-        UserModel.Role role = UserModel.Role.valueOf(data.getRole());
+        Role role = Role.valueOf(data.getRole());
 
-        if (role != UserModel.Role.MERCHANT) {
+        if (role != Role.MERCHANT) {
             throw new IllegalArgumentException(
                 "Merchant registration requires the MERCHANT role"
             );
@@ -183,8 +184,8 @@ public class UserService {
             .orElseThrow(() -> new IllegalStateException(
                 "User could not be converted into a merchant"
             ));
-            Set<UserModel.Role> updatedRoles =new HashSet<>(merchant.getRoles());
-            updatedRoles.add(UserModel.Role.MERCHANT);
+            Set<Role> updatedRoles =new HashSet<>(merchant.getRoles());
+            updatedRoles.add(Role.MERCHANT);
             merchant.setRoles(updatedRoles);
             RegStripeConnectAcc_res_dto stripeResponse = paymentServiceClient.registerStripeConnectAccount();
             merchant.setStripeAccountId(stripeResponse.getStripeId());
@@ -210,9 +211,9 @@ public class UserService {
         UserModel user = userRepo.findByNic(nic)
             .orElseThrow(() -> new BadCredentialsExc("USER_NOT_FOUND", "User not found: " + nic));
         try{
-            Set<UserModel.Role> updatedRoles =
+            Set<Role> updatedRoles =
             new HashSet<>(user.getRoles());
-            updatedRoles.add(UserModel.Role.CUSTOMER);
+            updatedRoles.add(Role.CUSTOMER);
             user.setRoles(updatedRoles);
             UserModel savedUser = userRepo.saveAndFlush(user);
             return buildCurrentUserProfile(savedUser);

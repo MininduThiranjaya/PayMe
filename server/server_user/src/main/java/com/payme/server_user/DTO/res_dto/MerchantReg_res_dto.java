@@ -5,6 +5,7 @@ import java.util.Set;
 
 import com.payme.server_user.enums.MerchantStatus;
 import com.payme.server_user.model.UserModel;
+import com.payme.server_user.enums.Role;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -25,7 +26,7 @@ public class MerchantReg_res_dto extends UserReg_res_dto {
             String nic,
             String stripeAccountId,
             String userName,
-            Set<UserModel.Role> roles,
+            Set<Role> roles,
             String stripeOnboardingURL,
             Boolean chargesEnabled,
             Boolean payoutsEnabled,
