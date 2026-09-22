@@ -8,6 +8,7 @@ import javax.crypto.SecretKey;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.oauth2.core.DelegatingOAuth2TokenValidator;
@@ -37,7 +38,9 @@ public class securityConfig {
             .csrf(csrf -> csrf.disable())
             .authorizeHttpRequests(auth ->
                 auth
-                    // .requestMatchers(HttpMethod.POST, "/payme/api/order/set-new-order").permitAll()
+                    .requestMatchers(HttpMethod.PUT, "/payme/api/order/internal/payment-pending/{orderId}").permitAll()
+                    .requestMatchers(HttpMethod.PUT, "/payme/api/order/internal/payment-paid/{orderId}").permitAll()
+                    .requestMatchers(HttpMethod.PUT, "/upayme/api/order/internal/payment-failed/{orderId}").permitAll()
                     // .requestMatchers(HttpMethod.GET, "/payme/api/order/get-order-by-id/{id}").permitAll()
                     .anyRequest().authenticated()
             ).oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> 
