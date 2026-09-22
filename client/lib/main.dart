@@ -2,8 +2,10 @@ import 'package:client/config/DioClient.dart';
 import 'package:client/providers/AuthProvider.dart';
 import 'package:client/providers/RegistrationProvider.dart';
 import 'package:client/providers/SellProductProvider.dart';
+import 'package:client/providers/CustomerOrderProvider.dart';
 import 'package:client/services/Login_Service.dart';
 import 'package:client/services/Register_Service.dart';
+import 'package:client/services/CustomerOrder_Service.dart';
 import 'package:client/services/SellProduct_Service.dart';
 import 'package:client/storage/Role_Storage.dart';
 import 'package:client/storage/Token_Storage.dart';
@@ -17,6 +19,7 @@ void main() {
   final loginService = Login_Service(dioClient: dio);
   final registerService = Register_Service(dioClient: dio);
   final sellProductService = SellProduct_Service(dioClient: dio);
+  final customerOrderService = CustomerOrder_Service(dioClient: dio);
   runApp(
     MultiProvider(
       providers: [
@@ -40,6 +43,14 @@ void main() {
               SellProductProvider(
             sellProductService:
                 sellProductService,
+          ),
+        ),
+
+        ChangeNotifierProvider(
+          create: (_) =>
+              CustomerOrderProvider(
+            customerOrderService:
+                customerOrderService,
           ),
         ),
       ],
