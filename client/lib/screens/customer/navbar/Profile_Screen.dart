@@ -440,8 +440,7 @@ class _Profile_Screen_State extends State<Profile_Screen> {
   }
 
   void _logout() {
-    // TODO: hook into AuthProvider logout
-    context.read<AuthProvider>();
+    context.read<AuthProvider>().logout();
   }
 
   @override
