@@ -6,4 +6,5 @@ class ApiEndpoints {
   static const String login = 'user/login';
   static const String me = 'user/me';
   static const String setNewOrder = 'order/create-order';
+  static const String claimOrder ='order/claim-order';
 }
