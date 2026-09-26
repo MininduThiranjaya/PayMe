@@ -5,12 +5,14 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.payme.server_user.services.MerchantInternalService;
+import com.payme.server_user.DTO.ApiResponse;
 import com.payme.server_user.DTO.req_dto.StripeWebhookUpdateAcc_req_dto;
 
 import jakarta.validation.Valid;
@@ -30,4 +32,17 @@ public class MerchantInternalController {
         service.updateStripeStatuService(data);
         return ResponseEntity.ok().build();
     }
+
+    @PutMapping("/get-stripe-id/{merchantNic}")
+    public ResponseEntity<ApiResponse<String>> getMerchantStripeIdByMerchantNicController(@PathVariable String merchantNic) {
+
+        String res = service.getMerchantStripeIdByMerchantNicService(merchantNic);
+        ApiResponse response = ApiResponse.<String>builder()
+            .status(true)
+            .message("Send merchant stripe id successfully")
+            .resData(res)
+            .build();
+        return ResponseEntity.ok(response);
+    }
+    
 }
