@@ -12,6 +12,7 @@ import com.payme.server_order.DTO.ApiResponse;
 import com.payme.server_order.DTO.req_dto.NewOrder_req_dto;
 import com.payme.server_order.DTO.req_dto.CustomerClaimOrder_req_dto;
 import com.payme.server_order.DTO.res_dto.CustomerClaimOrder_res_dto;
+import com.payme.server_order.DTO.res_dto.PaymentReadyDetails_res_dto;
 import com.payme.server_order.service.OrderInternalService;
 
 import jakarta.validation.Valid;
@@ -42,7 +43,21 @@ public class OrderInternalController {
     @PutMapping("/payment-failed/{orderId}")
     public ResponseEntity<Void> setOrderPaymentFailedController(@PathVariable long orderId) {
 
-            service.setOrderPaymentFailedService(orderId);
-            return ResponseEntity.noContent().build();
+        service.setOrderPaymentFailedService(orderId);
+        return ResponseEntity.noContent().build();
     }
+
+    @GetMapping("/get-order-details/{orderId}")
+    public ResponseEntity<ApiResponse<PaymentReadyDetails_res_dto>> getPaymentDetailsByOrderIdController(@PathVariable long orderId) {
+
+        PaymentReadyDetails_res_dto res = service.getPaymentDetailsByOrderIdService(orderId);
+        ApiResponse response = ApiResponse.<PaymentReadyDetails_res_dto>builder()
+            .status(true)
+            .message("Send payment ready order details successfully")
+            .resData(res)
+            .build();
+        return ResponseEntity.ok(response);
+    }
+
+    
 }

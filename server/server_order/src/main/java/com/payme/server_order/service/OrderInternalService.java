@@ -1,24 +1,13 @@
 
 package com.payme.server_order.service;
 
-import java.util.*;
-
 import org.springframework.stereotype.Service;
-
-import com.payme.server_order.DTO.req_dto.CustomerClaimOrder_req_dto;
-import com.payme.server_order.DTO.req_dto.NewOrderItem_req_dto;
-import com.payme.server_order.DTO.req_dto.NewOrder_req_dto;
-import com.payme.server_order.DTO.res_dto.CustomerClaimOrder_res_dto;
-import com.payme.server_order.DTO.res_dto.OrderItem_res_dto;
-import com.payme.server_order.enums.OrderStatus;
-import com.payme.server_order.error.exceptions.OrderNotFoundExc;
-import com.payme.server_order.error.exceptions.OrderNotSavedExc;
-import com.payme.server_order.model.OrderItemModel;
-import com.payme.server_order.model.OrderModel;
-import com.payme.server_order.repository.OrderRepo;
 import org.springframework.transaction.annotation.Transactional;
 
-import org.springframework.security.oauth2.jwt.Jwt;
+import com.payme.server_order.DTO.res_dto.PaymentReadyDetails_res_dto;
+import com.payme.server_order.enums.OrderStatus;
+import com.payme.server_order.model.OrderModel;
+import com.payme.server_order.repository.OrderRepo;
 
 import lombok.AllArgsConstructor;
 
@@ -82,5 +71,35 @@ public class OrderInternalService {
         }
         order.setStatus(OrderStatus.CLAIMED);
         orderRepo.save(order);
+    }
+
+    @Transactional
+    public PaymentReadyDetails_res_dto getPaymentDetailsByOrderIdService(long orderId) {
+
+        OrderModel order = orderRepo
+            .findById(orderId)
+            .orElseThrow(
+                () -> new RuntimeException(
+                    "Order not found: " + orderId
+                )
+            );
+        if (order.getStatus() != OrderStatus.CLAIMED) {
+            throw new RuntimeException(
+                "Order is not ready for payment. Current status: " + order.getStatus()
+            );
+        }
+        long totalAmount = order
+            .getOrderItem()
+            .stream()
+            .mapToLong(
+                item -> (long) (item.getQuantity() * item.getUnitPrice())
+            )
+            .sum();
+        return PaymentReadyDetails_res_dto
+                .builder()
+                .merchantNic(order.getMerchantNic())
+                .totalAmount(totalAmount)
+                .createdAt(order.getCreatedAt())
+                .build();
     }
 }
