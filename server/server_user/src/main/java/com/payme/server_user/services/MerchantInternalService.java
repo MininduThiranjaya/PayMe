@@ -1,19 +1,14 @@
 package com.payme.server_user.services;
 
-import org.springframework.dao.DataAccessException;
-import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
-import com.payme.server_user.repository.MerchantRepo;
-
-import lombok.RequiredArgsConstructor;
 
 import com.payme.server_user.DTO.req_dto.StripeWebhookUpdateAcc_req_dto;
 import com.payme.server_user.enums.MerchantStatus;
 import com.payme.server_user.model.MerchantModel;
+import com.payme.server_user.repository.MerchantRepo;
+
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -51,5 +46,26 @@ public class MerchantInternalService {
             merchant.setMerchantStatus(MerchantStatus.pending_stripe_onboarding);
         }
         repo.save(merchant);
+    }
+
+    public String getMerchantStripeIdByMerchantNicService(String merchantNic) {
+        
+        MerchantModel merchant = repo
+            .findByNic(merchantNic)
+            .orElseThrow(
+                () -> new RuntimeException(
+                    "Merchant not found with NIC: " + merchantNic
+                )
+            );
+        String stripeAccountId = merchant.getStripeAccountId();
+        if (stripeAccountId == null || stripeAccountId.isBlank()) {
+            throw new RuntimeException("Merchant does not have a Stripe account");
+        }
+        if (!Boolean.TRUE.equals(merchant.getChargesEnabled())) {
+            throw new RuntimeException(
+                "Merchant Stripe account is not ready to accept payments"
+            );
+        }
+        return stripeAccountId;
     }
 }
