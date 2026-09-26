@@ -41,7 +41,7 @@ public class securityConfig {
                     .requestMatchers(HttpMethod.PUT, "/payme/api/order/internal/payment-pending/{orderId}").permitAll()
                     .requestMatchers(HttpMethod.PUT, "/payme/api/order/internal/payment-paid/{orderId}").permitAll()
                     .requestMatchers(HttpMethod.PUT, "/upayme/api/order/internal/payment-failed/{orderId}").permitAll()
-                    // .requestMatchers(HttpMethod.GET, "/payme/api/order/get-order-by-id/{id}").permitAll()
+                    .requestMatchers(HttpMethod.GET, "/payme/api/order/internal/get-order-details/{orderId}").permitAll()
                     .anyRequest().authenticated()
             ).oauth2ResourceServer(oauth2 -> oauth2.jwt(jwt -> 
                 jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())
